@@ -77,12 +77,12 @@ app.post("/register", async (req, res) => {
 });
 
 app.get("/catalog", (req, res) => {
-  connection.query("SELECT name FROM catalog", (error, results, fields) => {
+  connection.query("SELECT id, name FROM catalog", (error, results, fields) => {
     if (error) throw error;
-    const categoryNames = results.map(result => result.name);
-    res.json(categoryNames);
+    res.json(results);
   });
 });
+
 app.get("/catalog/:id", (req, res) => {
   const categoryId = req.params.id;
   connection.query(

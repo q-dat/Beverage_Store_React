@@ -1,35 +1,133 @@
 import React, { useEffect, useState } from "react";
 import { FaSearch, FaCartPlus, FaHeart } from "react-icons/fa";
-import { getProductByQuery } from "../services/ProductService";
-import { useSearchParams } from "react-router-dom";
-import { Products } from "../types/Products";
+import { Catalogs, Products } from "../types/Products";
+import {
+  fetchAllProducts,
+  fetchCategories,
+  fetchProductsByCategory,
+} from "../services/CategoryService";
 
 const Shop: React.FC = () => {
-  const [searchParams] = useSearchParams();
-  
-  const getQueryParam = (param: string) => {
-    return searchParams.get(param);
-  };
-  const category = getQueryParam("category");
+  //Tìm Kiếm
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [searchResults, setSearchResults] = useState<Products[]>([]);
+
+  // Danh Mục
+  const [categories, setCategories] = useState<Catalogs[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+
+  // Sản Phẩm
   const [products, setProducts] = useState<Products[]>([]);
 
+  //
   useEffect(() => {
-    const fetchProducts = async () => {
+    if (searchTerm.trim() !== "") {
+      const filteredProducts = products.filter((product) =>
+        product.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setSearchResults(filteredProducts);
+    } else {
+      setSearchResults([]);
+    }
+  }, [searchTerm, products]);
+
+  // Lấy tất cả sản phẩm ban đầu
+  useEffect(() => {
+    const loadProducts = async () => {
       try {
-        const fetchedProducts = await getProductByQuery({ category:category});
+        const fetchedProducts = await fetchAllProducts();
         setProducts(fetchedProducts);
       } catch (error) {
-        console.error("Error fetching products: ", error);
+        console.error(error);
       }
     };
-    fetchProducts();
-  }, [category]);
+    loadProducts();
+  }, []);
+
+  // Lấy danh mục ban đầu
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        const fetchedCategories = await fetchCategories();
+        setCategories(fetchedCategories);
+      } catch (error) {
+        console.error("Lỗi khi lấy danh mục:", error);
+      }
+    };
+    loadCategories();
+  }, []);
+
+  // Lấy sản phẩm theo danh mục khi danh mục được chọn
+  useEffect(() => {
+    const loadProductsByCategory = async () => {
+      if (selectedCategory !== null) {
+        try {
+          const fetchedProducts = await fetchProductsByCategory(
+            selectedCategory
+          );
+          setProducts(fetchedProducts);
+        } catch (error) {
+          console.error("Lỗi khi lấy sản phẩm:", error);
+        }
+      }
+    };
+    loadProductsByCategory();
+  }, [selectedCategory]);
+
+  const handleCategoryClick = (id: number | null) => {
+    setSelectedCategory(id);
+    if (id === null) {
+      const loadProducts = async () => {
+        try {
+          const fetchedProducts = await fetchAllProducts();
+          setProducts(fetchedProducts);
+        } catch (error) {
+          console.error(error);
+        }
+      };
+      loadProducts();
+    }
+  };
 
   return (
     <div>
+      <div className="text-center mt-5">
+        <input
+          type="text"
+          placeholder="Tìm kiếm sản phẩm..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-200"
+        />
+      </div>
+
+      <div className="col-md-3">
+        <ul className="list-group my-4">
+          <button
+            className="w-full text-left py-2 px-4 bg-gray-200 rounded hover:bg-gray-300"
+            onClick={() => handleCategoryClick(null)}
+          >
+            Tất cả sản phẩm
+          </button>
+          {categories.map((category) => (
+            <li key={category.id} className="list-group-item">
+              <a onClick={() => handleCategoryClick(category.id)}>
+                {category.name}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div className="text-center mt-[20px] md:m-5">
+        <img className="mx-auto" src="" alt="" />
+        <h1 className="font-mono py-2 text-[1.3rem] md:text-[2rem]">
+          Đồ uống ưa thích
+        </h1>
+      </div>
+
       <section className="px-[10px] xl:px-[150px]">
         <div className="grid md:grid-cols-3 xl:grid-cols-4 grid-cols-2 md:gap-[10px] gap-[10px] justify-center items-center">
-          {products.map((product) => (
+          {(searchTerm ? searchResults : products).map((product) => (
             <div
               key={product.id}
               className="relative border-gray-300 border-[1px] rounded-[10px]"
@@ -95,5 +193,4 @@ const Shop: React.FC = () => {
   );
 };
 
-
-export default Shop
+export default Shop;

@@ -1,34 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import { Link } from "react-router-dom";
-import { getCategories } from "../services/CategoryService";
-import { Catalogs } from "../types/Products";
+
 
 const Header: React.FC = () => {
   const [active, setActive] = useState<string>("Trang Chủ");
-  const [categories, setCategories] = useState<Catalogs[]>([]);
-
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const fetchedCategories = await getCategories();
-        setCategories(fetchedCategories);
-      } catch (error) {
-        console.error("Error fetching categories: ", error);
-      }
-    };
-    fetchCategories();
-  }, []);
-
   const navItems = [
     { name: "Trang Chủ", link: "/" },
-    {
-      name: "Sản Phẩm",
-      link: "/shop",
-      subItems: categories.map((category) => ({
-        name: category.name,
-        link: `/shop?catalog=${category.id}`,
-      })),
-    },
+    { name: "Sản Phẩm", link: "/shop" },
     { name: "Giới Thiệu", link: "/about" },
     { name: "Liên Hệ", link: "/contact" },
   ];
@@ -73,25 +51,6 @@ const Header: React.FC = () => {
                 >
                   {item.name}
                 </Link>
-                {item.subItems && (
-                  <ul className="p-2">
-                    {item.subItems.map((subItem) => (
-                      <li key={subItem.name}>
-                        <Link
-                          to={subItem.link}
-                          className={`${
-                            active === subItem.name
-                              ? "border-b-2 rounded-none border-primary font-light text-primary"
-                              : "font-light rounded-none text-black"
-                          }`}
-                          onClick={() => setActive(subItem.name)}
-                        >
-                          {subItem.name}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                )}
               </li>
             ))}
           </ul>
@@ -117,52 +76,17 @@ const Header: React.FC = () => {
         <ul className="menu menu-horizontal px-1">
           {navItems.map((item) => (
             <li key={item.name}>
-              {item.subItems ? (
-                <details>
-                  <summary>
-                    <Link
-                      to={item.link}
-                      className={`${
-                        active === item.name
-                          ? "border-b-2 rounded-none border-primary font-light text-primary"
-                          : "font-light rounded-none text-black"
-                      }`}
-                      onClick={() => setActive(item.name)}
-                    >
-                      {item.name}
-                    </Link>
-                  </summary>
-                  <ul className="p-2 z-50">
-                    {item.subItems.map((subItem) => (
-                      <li key={subItem.name}>
-                        <Link
-                          to={subItem.link}
-                          className={`${
-                            active === subItem.name
-                              ? "border-b-2 rounded-none border-primary font-light text-primary"
-                              : "font-light rounded-none text-black"
-                          }`}
-                          onClick={() => setActive(subItem.name)}
-                        >
-                          {subItem.name}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </details>
-              ) : (
-                <Link
-                  to={item.link}
-                  className={`${
-                    active === item.name
-                      ? "border-b-2 rounded-none border-primary font-light text-primary"
-                      : "font-light rounded-none text-black"
-                  }`}
-                  onClick={() => setActive(item.name)}
-                >
-                  {item.name}
-                </Link>
-              )}
+              <Link
+                to={item.link}
+                className={`${
+                  active === item.name
+                    ? "border-b-2 rounded-none border-primary font-light text-primary"
+                    : "font-light rounded-none text-black"
+                }`}
+                onClick={() => setActive(item.name)}
+              >
+                {item.name}
+              </Link>
             </li>
           ))}
         </ul>
