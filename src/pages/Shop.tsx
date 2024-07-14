@@ -21,7 +21,7 @@ const Shop: React.FC = () => {
   // Sản Phẩm/Products
   const [products, setProducts] = useState<Products[]>([]);
 
-  //
+  // Tìm Kiếm/Search
   useEffect(() => {
     if (searchTerm.trim() !== "") {
       const filteredProducts = products.filter((product) =>

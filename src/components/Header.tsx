@@ -1,4 +1,4 @@
-import React, {  useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 
@@ -37,15 +37,15 @@ const Header: React.FC = () => {
               <polygon points="400 145.49 366.51 112 256 222.51 145.49 112 112 145.49 222.51 256 112 366.51 145.49 400 256 289.49 366.51 400 400 289.49 256 400 145.49" />
             </svg>
           </label>
-          <ul className="z-[9999] menu menu-sm dropdown-content mt-3 p-5 shadow bg-base-100 rounded-box w-52">
+          <ul className="z-[9999] menu menu-sm dropdown-content mt-3 p-5 shadow bg-base-100 rounded-box w-52 space-y-2">
             {navItems.map((item) => (
               <li key={item.name}>
                 <Link
                   to={item.link}
                   className={`${
                     active === item.name
-                      ? "border-b-2 rounded-none border-primary font-light text-primary"
-                      : "font-light rounded-none text-black"
+                    ? "border-b-2 rounded-lg border-primary font-light text-primary"
+                    : "font-light bg-primary hover:bg-opacity-50 hover:bg-primary rounded-lg text-white "
                   }`}
                   onClick={() => setActive(item.name)}
                 >
@@ -73,15 +73,15 @@ const Header: React.FC = () => {
         </Link>
       </div>
       <div className="navbar-center hidden lg:flex">
-        <ul className="menu menu-horizontal px-1">
+        <ul className="menu menu-horizontal px-1 space-x-2">
           {navItems.map((item) => (
             <li key={item.name}>
               <Link
                 to={item.link}
                 className={`${
                   active === item.name
-                    ? "border-b-2 rounded-none border-primary font-light text-primary"
-                    : "font-light rounded-none text-black"
+                    ? "border-b-2 rounded-lg border-primary font-light text-primary"
+                    : "font-light bg-primary hover:bg-opacity-50 hover:bg-primary rounded-lg text-white "
                 }`}
                 onClick={() => setActive(item.name)}
               >
