@@ -6,17 +6,19 @@ import {
   fetchCategories,
   fetchProductsByCategory,
 } from "../services/CategoryService";
+import { Button, Input } from "react-daisyui";
+import { IoSearchOutline } from "react-icons/io5";
 
 const Shop: React.FC = () => {
-  //Tìm Kiếm
+  //Tìm Kiếm/Search
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [searchResults, setSearchResults] = useState<Products[]>([]);
 
-  // Danh Mục
+  // Danh Mục/Catalog
   const [categories, setCategories] = useState<Catalogs[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
 
-  // Sản Phẩm
+  // Sản Phẩm/Products
   const [products, setProducts] = useState<Products[]>([]);
 
   //
@@ -91,41 +93,37 @@ const Shop: React.FC = () => {
 
   return (
     <div>
-      <div className="text-center mt-5">
-        <input
-          type="text"
-          placeholder="Tìm kiếm sản phẩm..."
-          value={searchTerm}
+      {/* Input search */}
+      <div className="relative mx-[10px] xl:mx-[150px] flex items-center ">
+        <Input
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-200"
+          value={searchTerm}
+          className="border-black focus:outline-none w-full"
+          type="text"
+          placeholder="Tìm Kiếm..."
         />
+        <IoSearchOutline className="absolute right-2 h-5 w-5 cursor-pointer text-black " />
       </div>
-
-      <div className="col-md-3">
-        <ul className="list-group my-4">
-          <button
-            className="w-full text-left py-2 px-4 bg-gray-200 rounded hover:bg-gray-300"
-            onClick={() => handleCategoryClick(null)}
+      {/* Button Categories */}
+      <div className="px-[10px] xl:px-[150px] ">
+        <p className="font-bold my-5 text-4xl">Danh Mục</p>
+        <Button
+          className=" bg-primary text-white hover:bg-white hover:text-primary hover:bg-opacity-50"
+          onClick={() => handleCategoryClick(null)}
+        >
+          Tất cả sản phẩm
+        </Button>
+        {categories.map((category) => (
+          <Button
+            onClick={() => handleCategoryClick(category.id)}
+            key={category.id}
+            className="md:mx-2 bg-primary text-white hover:bg-white hover:text-primary hover:bg-opacity-50"
           >
-            Tất cả sản phẩm
-          </button>
-          {categories.map((category) => (
-            <li key={category.id} className="list-group-item">
-              <a onClick={() => handleCategoryClick(category.id)}>
-                {category.name}
-              </a>
-            </li>
-          ))}
-        </ul>
+            {category.name}
+          </Button>
+        ))}
       </div>
-      <div className="text-center mt-[20px] md:m-5">
-        <img className="mx-auto" src="" alt="" />
-        <h1 className="font-mono py-2 text-[1.3rem] md:text-[2rem]">
-          Đồ uống ưa thích
-        </h1>
-      </div>
-
-      <section className="px-[10px] xl:px-[150px]">
+      <section className="mt-10 px-[10px] xl:px-[150px]">
         <div className="grid md:grid-cols-3 xl:grid-cols-4 grid-cols-2 md:gap-[10px] gap-[10px] justify-center items-center">
           {(searchTerm ? searchResults : products).map((product) => (
             <div
@@ -145,19 +143,19 @@ const Shop: React.FC = () => {
                 <div className="my-[10px] pl-[10px] min-h-[120px] font-serif">
                   <p className="font-light">{product.name}</p>
                   <div className="hidden xl:block md:space-x-2">
-                    <span>{product.price}đ</span>
+                    <span>{product.price}.000đ</span>
                     {product.sale && (
-                      <del className="text-red-500">{product.sale}đ</del>
+                      <del className="text-red-500">{product.sale}.000đ</del>
                     )}
                   </div>
 
                   <div className="xl:hidden">
                     {product.sale && (
                       <p>
-                        <del className="text-red-500">{product.sale}đ</del>
+                        <del className="text-red-500">{product.sale}.000đ</del>
                       </p>
                     )}
-                    <p>{product.price}đ</p>
+                    <p>{product.price}.000đ</p>
                   </div>
                 </div>
                 <div className="my-[10px] pr-[10px]">

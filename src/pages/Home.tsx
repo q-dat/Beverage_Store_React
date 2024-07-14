@@ -50,19 +50,19 @@ const Home: React.FC = () => {
                 <div className="my-[10px] pl-[10px] min-h-[120px] font-serif">
                   <p className="font-light">{product.name}</p>
                   <div className="hidden xl:block md:space-x-2">
-                    <span>{product.price}đ</span>
+                    <span>{product.price}.000đ</span>
                     {product.price && (
-                      <del className="text-red-500">{product.sale}đ</del>
+                      <del className="text-red-500">{product.sale}.000đ</del>
                     )}
                   </div>
 
                   <div className="xl:hidden">
                     {product.price && (
                       <p>
-                        <del className="text-red-500">{product.sale}đ</del>
+                        <del className="text-red-500">{product.sale}.000đ</del>
                       </p>
                     )}
-                    <p>{product.price}đ</p>
+                    <p>{product.price}.000đ</p>
                   </div>
                 </div>
                 <div className="my-[10px] pr-[10px]">
