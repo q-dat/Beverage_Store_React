@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
-
 const Header: React.FC = () => {
   const [active, setActive] = useState<string>("Trang Chủ");
   const navItems = [
@@ -44,8 +43,8 @@ const Header: React.FC = () => {
                   to={item.link}
                   className={`${
                     active === item.name
-                    ? "border-b-2 rounded-lg border-primary font-light text-primary"
-                    : "font-light bg-primary hover:bg-opacity-50 hover:bg-primary rounded-lg text-white "
+                      ? "border-b-2 rounded-lg border-primary font-light text-primary"
+                      : "font-light bg-primary hover:bg-opacity-50 hover:bg-primary rounded-lg text-white "
                   }`}
                   onClick={() => setActive(item.name)}
                 >

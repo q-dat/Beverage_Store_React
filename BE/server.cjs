@@ -99,7 +99,6 @@ app.get("/catalog/:id", (req, res) => {
   );
 });
 
-// Lấy danh sách sản phẩm theo danh mục
 app.get("/products/catalog/:id_catalog", (req, res) => {
   const id_catalog = req.params.id_catalog;
   connection.query(
@@ -111,6 +110,7 @@ app.get("/products/catalog/:id_catalog", (req, res) => {
     }
   );
 });
+
 app.get("/products/search/:name", (req, res) => {
   const productName = req.params.name;
   connection.query(
