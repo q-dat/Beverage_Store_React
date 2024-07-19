@@ -10,7 +10,7 @@ app.use(
     optionsSuccessStatus: 200,
   })
 );
-
+app.use(express.json());
 const connection = mysql.createConnection({
   host: "localhost",
   user: "root",
@@ -56,24 +56,67 @@ app.get("/sale", (req, res) => {
   );
 });
 // User
-app.post("/register", async (req, res) => {
-  const { username, email, address, password } = req.body;
-  if (!username || !email || !address || !password) {
-    // return res.status(400).send({ message: 'Tất cả các trường đều là bắt buộc' });
+app.post("/register", (req, res) => {
+  const { username, phone, email, address, password, description } = req.body;
+  if (!username || !phone || !email || !address || !password) {
+    return res
+      .status(400)
+      .send({ message: "Tất cả các trường đều là bắt buộc" });
   }
 
-  try {
-    const pool = await connectdb();
-    const connection = await pool.getConnection();
-    const query =
-      "INSERT INTO user (username, email, address, password) VALUES (?, ?, ?, ?)";
-    await connection.query(query, [username, email, address, password]);
-    connection.release();
-    res.status(201).send({ message: "Người dùng đã được đăng ký" });
-  } catch (error) {
-    console.error("Lỗi truy vấn: ", error);
-    res.status(500).send({ error: "Lỗi truy vấn" });
+  const query =
+    "INSERT INTO user (username, phone, email, address, password, description) VALUES (?, ?, ?, ?, ?, ?)";
+  connection.query(
+    query,
+    [username, phone, email, address, password, description],
+    (error, results) => {
+      if (error) {
+        console.error("Lỗi truy vấn: ", error);
+        res.status(500).send({ error: "Lỗi truy vấn" });
+      } else {
+        res.status(201).send({ message: "Người dùng đã được đăng ký" });
+      }
+    }
+  );
+});
+
+app.post("/login", (req, res) => {
+  const { email, password } = req.body || {}; // Thêm fallback giá trị {}
+  console.log("Received login request:", req.body);
+  if (!email || !password) {
+    return res.status(400).json({ message: "Email và mật khẩu là bắt buộc" });
   }
+  const sql = "SELECT * FROM user WHERE email = ? AND password = ?";
+
+  connection.query(sql, [email, password], (err, results) => {
+    if (err) {
+      console.error("Database error:", err);
+      return res.status(500).json({ message: "Lỗi hệ thống" });
+    }
+    if (results.length === 0) {
+      return res.status(401).json({ message: "Sai email hoặc mật khẩu" });
+    }
+
+    const user = results[0];
+    const {
+      id,
+      username,
+      phone,
+      email: userEmail,
+      address,
+      description,
+    } = user;
+
+    res.status(200).json({
+      message: "Đăng nhập thành công",
+      id: id,
+      username: username,
+      phone: phone,
+      email: userEmail,
+      address: address,
+      description: description,
+    });
+  });
 });
 
 app.get("/catalog", (req, res) => {

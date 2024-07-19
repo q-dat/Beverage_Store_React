@@ -1,14 +1,29 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 const Header: React.FC = () => {
   const [active, setActive] = useState<string>("Trang Chủ");
+  const [username, setUsername] = useState<string | null>(null);
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user") || "null");
+    if (user && user.username) {
+      setUsername(user.username);
+    }
+  }, []);
+
   const navItems = [
     { name: "Trang Chủ", link: "/" },
     { name: "Sản Phẩm", link: "/shop" },
     { name: "Giới Thiệu", link: "/about" },
     { name: "Liên Hệ", link: "/contact" },
   ];
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    setUsername(null);
+    window.location.href = "/login";
+  };
 
   return (
     <div className="navbar py-[35px] px-[10px] lg:px-20">
@@ -44,7 +59,7 @@ const Header: React.FC = () => {
                   className={`${
                     active === item.name
                       ? "border-b-2 rounded-lg border-primary font-light text-primary"
-                      : "font-light bg-primary hover:bg-opacity-50 hover:bg-primary rounded-lg text-white "
+                      : "font-light bg-primary hover:bg-opacity-50 hover:bg-primary rounded-lg text-black "
                   }`}
                   onClick={() => setActive(item.name)}
                 >
@@ -80,7 +95,7 @@ const Header: React.FC = () => {
                 className={`${
                   active === item.name
                     ? "border-b-2 rounded-lg border-primary font-light text-primary"
-                    : "font-light bg-primary hover:bg-opacity-50 hover:bg-primary rounded-lg text-white "
+                    : "font-light bg-primary hover:bg-opacity-50 hover:bg-primary rounded-lg text-black "
                 }`}
                 onClick={() => setActive(item.name)}
               >
@@ -91,14 +106,25 @@ const Header: React.FC = () => {
         </ul>
       </div>
       <div className="navbar-end space-x-5 hidden xl:flex">
-        <Link to="/login" className="btn">
-          <i className="fa fa-user"></i>
-          <span>Đăng Nhập</span>
-        </Link>
-        <Link to="/cart" className="btn">
-          <i className="fa fa-cart-shopping"></i>
-          Giỏ Hàng
-        </Link>
+        {username ? (
+          <>
+            <span className="text-black">Xin chào, {username}</span>
+            <button onClick={handleLogout} className="btn">
+              Đăng Xuất
+            </button>
+          </>
+        ) : (
+          <>
+            <Link to="/login" className="btn">
+              <i className="fa fa-user"></i>
+              <span>Đăng Nhập</span>
+            </Link>
+            <Link to="/cart" className="btn">
+              <i className="fa fa-cart-shopping"></i>
+              Giỏ Hàng
+            </Link>
+          </>
+        )}
       </div>
       <div>
         <Link to="/login">
