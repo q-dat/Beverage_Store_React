@@ -9,9 +9,10 @@ import {
 import { Button, Input } from "react-daisyui";
 import { IoSearchOutline } from "react-icons/io5";
 import { Link } from "react-router-dom";
+import { searchProductsByName } from "../services/SearchService";
 
 const Shop: React.FC = () => {
-  //Tìm Kiếm/Search
+  // Tìm Kiếm/Search
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [searchResults, setSearchResults] = useState<Products[]>([]);
 
@@ -24,15 +25,20 @@ const Shop: React.FC = () => {
 
   // Tìm Kiếm/Search
   useEffect(() => {
-    if (searchTerm.trim() !== "") {
-      const filteredProducts = products.filter((product) =>
-        product.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setSearchResults(filteredProducts);
-    } else {
-      setSearchResults([]);
-    }
-  }, [searchTerm, products]);
+    const loadSearchResults = async () => {
+      if (searchTerm.trim() !== "") {
+        try {
+          const results = await searchProductsByName(searchTerm);
+          setSearchResults(results);
+        } catch (error) {
+          console.error("Lỗi khi tìm kiếm sản phẩm:", error);
+        }
+      } else {
+        setSearchResults([]);
+      }
+    };
+    loadSearchResults();
+  }, [searchTerm]);
 
   // Lấy tất cả sản phẩm ban đầu
   useEffect(() => {
@@ -70,13 +76,14 @@ const Shop: React.FC = () => {
           );
           setProducts(fetchedProducts);
         } catch (error) {
-          console.error("Lỗi khi lấy sản phẩm:", error);
+          console.error("Lỗi khi lấy sản phẩm theo danh mục:", error);
         }
       }
     };
     loadProductsByCategory();
   }, [selectedCategory]);
-  //Sự kiện ấn vào tên danh mục
+
+  // Sự kiện ấn vào tên danh mục
   const handleCategoryClick = (id: number | null) => {
     setSelectedCategory(id);
     if (id === null) {
@@ -109,7 +116,7 @@ const Shop: React.FC = () => {
       <div className="px-[10px] xl:px-[150px] ">
         <p className="font-bold my-5 text-4xl">Danh Mục</p>
         <Button
-          className=" bg-primary text-white hover:bg-white hover:text-primary hover:bg-opacity-50"
+          className="bg-primary text-white hover:bg-white hover:text-primary hover:bg-opacity-50"
           onClick={() => handleCategoryClick(null)}
         >
           Tất cả sản phẩm
@@ -134,7 +141,7 @@ const Shop: React.FC = () => {
             >
               <Link to={`/detail/${product.id}`}>
                 <img
-                  className="rounded-[10px] lg:w-[350px] lg:h-[350px] xl:w-[240px] xl:h-[220px] object-cover"
+                  className="rounded-[10px] w-full object-cover"
                   loading="lazy"
                   src={`./products/${product.img}`}
                   alt={product.name}

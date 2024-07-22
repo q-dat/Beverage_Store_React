@@ -39,7 +39,7 @@ const Home: React.FC = () => {
             >
               <a href={`/detail/${product.id}`}>
                 <img
-                  className="rounded-[10px] lg:w-[350px] lg:h-[350px] xl:w-[240px] xl:h-[220px] object-cover"
+                  className="rounded-[10px]  w-full  object-cover"
                   loading="lazy"
                   src={`./products/${product.img}`}
                   alt={product.name}
