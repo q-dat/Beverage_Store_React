@@ -2,7 +2,7 @@ import React from 'react'
 
 const Contact:React.FC = () => {
   return (
-    <div>
+    <div className='text-center'>
       Đây là contact
     </div>
   )

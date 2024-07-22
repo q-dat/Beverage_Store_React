@@ -101,6 +101,13 @@ const Shop: React.FC = () => {
 
   return (
     <div>
+        <div className="glass mb-10 lg:px-20 py-2 px-[10px] text-sm breadcrumbs">
+    <ul className="font-light">
+        <li><Link to="/"><i className="fa-solid fa-house pr-2"></i>Trang Chủ</Link></li>
+        <li><Link to="/shop"><i className="fa-solid fa-circle-info pr-2"></i>Sản Phẩm</Link></li>
+    </ul>
+</div>
+{/* <!-- ------------------------------------------------------------------------------------------------------- --> */}
       {/* Input search */}
       <div className="relative mx-[10px] xl:mx-[150px] flex items-center ">
         <Input
