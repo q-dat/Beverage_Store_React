@@ -7,6 +7,7 @@ import Contact from "../pages/Contact";
 import ProductsDetail from "../pages/ProductsDetail";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
+import ShoppingCart from "../pages/ShoppingCart";
 
 export default function AppRouter() {
   return (
@@ -19,6 +20,7 @@ export default function AppRouter() {
         <Route path="detail/:id" element={<ProductsDetail />} />
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
+        <Route path="shopping-cart" element={<ShoppingCart />} />
         
       </Route>
     </Routes>

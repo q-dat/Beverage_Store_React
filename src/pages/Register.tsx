@@ -23,7 +23,23 @@ const Register: React.FC = () => {
   };
 
   return (
-    <div className="flex items-center justify-center h-screen bg-gray-100">
+    <>
+    <div className="glass mb-10 lg:px-20 py-2 px-[10px] text-sm breadcrumbs">
+      <ul className="font-light">
+        <li>
+          <Link to="/">
+            <i className="fa-solid fa-house pr-2"></i>Trang Chủ
+          </Link>
+        </li>
+        <li>
+          <Link to="/login">
+            <i className="fa-solid fa-circle-info pr-2"></i>Đăng Nhập
+          </Link>
+        </li>
+      </ul>
+    </div>
+    {/* <!-- ------------------------------------------------------------------------------------------------------- --> */}
+    <div className="flex items-center justify-center ">
       <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
         <h2 className="text-2xl font-bold text-center">Đăng Ký</h2>
         <form className="space-y-4" onSubmit={handleRegister}>
@@ -89,13 +105,14 @@ const Register: React.FC = () => {
           </div>
           {error && <p className="text-red-500 text-sm">{error}</p>}
           <button type="submit" className="w-full py-2 bg-primary text-white rounded-md hover:bg-primary">Đăng Ký</button>
-          <div className="text-center">
+          <div className="text-end">
             <h6>Đã có tài khoản?</h6>
-            <Link to="/login" className="text-primary hover:underline">Đăng Nhập</Link>
+            <Link to="/login" className="text-primary hover:no-underline underline">Đăng Nhập</Link>
           </div>
         </form>
       </div>
     </div>
+    </>
   );
 };
 

@@ -25,7 +25,7 @@ const Home: React.FC = () => {
       </div>
       <div className="text-center mt-[20px] md:m-5">
         <img className="mx-auto" src="" alt="" />
-        <h1 className="font-mono py-2 text-[1.3rem] md:text-[2rem]">
+        <h1 className="py-2 text-[1.3rem] md:text-[2rem]">
           Đồ uống ưa thích
         </h1>
       </div>
@@ -47,7 +47,7 @@ const Home: React.FC = () => {
               </a>
 
               <div className="flex justify-between items-start flex-row">
-                <div className="my-[10px] pl-[10px] min-h-[120px] font-serif">
+                <div className="my-[10px] pl-[10px] min-h-[120px] ">
                   <p className="font-light">{product.name}</p>
                   <div className="hidden xl:block md:space-x-2">
                     <span>{product.price}.000đ</span>

@@ -3,7 +3,7 @@ import React from "react";
 import { Footer } from "react-daisyui";
 const FooterFC: React.FC<{}> = () => {
   return (
-    <Footer className=" justify-between mt-10 p-10 bg-gray-200 px-20 text-neutral-content">
+    <Footer className=" justify-between p-10 bg-gray-200 px-20 text-neutral-content">
       <div>
         <img src="./image/logo.webp" alt="Logo" />
         <br />

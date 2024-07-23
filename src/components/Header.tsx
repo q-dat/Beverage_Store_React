@@ -1,4 +1,8 @@
 import React, { useState, useEffect } from "react";
+import { Button } from "react-daisyui";
+import { FaShoppingCart } from "react-icons/fa";
+import { FaUser } from "react-icons/fa6";
+import { HiOutlineLogout } from "react-icons/hi";
 import { Link } from "react-router-dom";
 
 const Header: React.FC = () => {
@@ -109,19 +113,23 @@ const Header: React.FC = () => {
         {username ? (
           <>
             <span className="text-black">Xin chào, {username}</span>
-            <button onClick={handleLogout} className="btn">
-              Đăng Xuất
-            </button>
+            <Button onClick={handleLogout} className="">
+              <HiOutlineLogout /> Đăng Xuất
+            </Button>
+            <Link to="/shopping-cart" className="btn">
+              <FaShoppingCart />
+              {/* Shopping Cart */}
+            </Link>
           </>
         ) : (
           <>
             <Link to="/login" className="btn">
-              <i className="fa fa-user"></i>
+              <FaUser />
               <span>Đăng Nhập</span>
             </Link>
-            <Link to="/cart" className="btn">
-              <i className="fa fa-cart-shopping"></i>
-              Giỏ Hàng
+            <Link to="/shopping-cart" className="btn">
+              <FaShoppingCart />
+              {/* Shopping Cart */}
             </Link>
           </>
         )}

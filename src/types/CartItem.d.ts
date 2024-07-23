@@ -1,0 +1,20 @@
+export interface CartItem {
+    id: string;
+    name: string;
+    price: number;
+    qty: number;
+  }
+  
+  export interface ShoppingContextType {
+    cartItems: CartItem[];
+    cartQty: number;
+    totalPrice: number;
+    increaseQty: (id: string) => void;
+    decreaseQty: (id: string) => void;
+    addCartItem: (product: CartItem) => void;
+    removeCartItem: (id: string) => void;
+    clearCart: () => void;
+    delivery: number;
+    discount: number;
+  }
+  
