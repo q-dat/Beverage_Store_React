@@ -6,6 +6,8 @@ import { HiOutlineLogout } from "react-icons/hi";
 import { Link } from "react-router-dom";
 import { useShoppingContext } from "../context/ShoppingContext";
 import { Logo } from "../assets";
+import { GiHamburgerMenu } from "react-icons/gi";
+import Avatar from "boring-avatars";
 
 const Header: React.FC = () => {
   const { getCartQty } = useShoppingContext();
@@ -33,31 +35,14 @@ const Header: React.FC = () => {
   };
 
   return (
-    <div className="navbar py-[35px] px-[10px] lg:px-20">
+    <div className="z-50 bg-white navbar py-[35px] px-[10px] lg:px-20">
       {/* Mobile */}
       <div className="navbar-start">
         <div className="dropdown flex">
-          <label className="lg:hidden btn btn-circle swap swap-rotate">
+          <Button className="lg:hidden swap swap-rotate">
             <input type="checkbox" />
-            <svg
-              className="swap-off fill-current"
-              xmlns="http://www.w3.org/2000/svg"
-              width="32"
-              height="32"
-              viewBox="0 0 512 512"
-            >
-              <path d="M64,384H448V341.33H64Zm0-106.67H448V234.67H64ZM64,128v42.67H448V128Z" />
-            </svg>
-            <svg
-              className="swap-on fill-current"
-              xmlns="http://www.w3.org/2000/svg"
-              width="32"
-              height="32"
-              viewBox="0 0 512 512"
-            >
-              <polygon points="400 145.49 366.51 112 256 222.51 145.49 112 112 145.49 222.51 256 112 366.51 145.49 400 256 289.49 366.51 400 400 289.49 256 400 145.49" />
-            </svg>
-          </label>
+            <GiHamburgerMenu className="text-2xl" />
+          </Button>
           <ul className="z-[9999] menu menu-sm dropdown-content mt-3 p-5 shadow bg-base-100 rounded-box w-52 space-y-2">
             {navItems.map((item) => (
               <li key={item.name}>
@@ -66,7 +51,7 @@ const Header: React.FC = () => {
                   className={`${
                     active === item.name
                       ? "border-b-2 rounded-lg border-primary font-light text-primary"
-                      : "font-light bg-primary hover:bg-opacity-50 hover:bg-primary rounded-lg text-black "
+                      : "font-light bg-primary hover:bg-opacity-50 hover:bg-primary rounded-lg text-white "
                   }`}
                   onClick={() => setActive(item.name)}
                 >
@@ -75,10 +60,7 @@ const Header: React.FC = () => {
               </li>
             ))}
           </ul>
-          <Link
-            to="/"
-            className="hidden lg:flex btn btn-ghost text-xl justify-center w-full"
-          >
+          <Link to="/" className="hidden lg:flex text-xl justify-center w-full">
             <img src={Logo} alt="Logo" />
           </Link>
         </div>
@@ -86,11 +68,8 @@ const Header: React.FC = () => {
 
       {/* Desktop */}
       <div className="navbar-center lg:hidden">
-        <Link
-          to="/"
-          className="btn btn-ghost text-xl flex justify-center w-full"
-        >
-          <img src="/image/logo.webp" alt="Logo" />
+        <Link to="/" className=" text-xl flex justify-center w-full">
+          <img src={Logo} alt="Logo" />
         </Link>
       </div>
       <div className="navbar-center hidden lg:flex">
@@ -102,7 +81,7 @@ const Header: React.FC = () => {
                 className={`${
                   active === item.name
                     ? "border-b-2 rounded-lg border-primary font-light text-primary"
-                    : "font-light bg-primary hover:bg-opacity-50 hover:bg-primary rounded-lg text-black "
+                    : "font-light bg-primary hover:bg-opacity-50 hover:bg-primary rounded-lg text-white "
                 }`}
                 onClick={() => setActive(item.name)}
               >
@@ -116,12 +95,12 @@ const Header: React.FC = () => {
         {username ? (
           <>
             <span className="text-black">Xin chào, {username}</span>
-            <Button onClick={handleLogout} className="">
+            <Button onClick={handleLogout} className="shadow galss">
               <HiOutlineLogout /> Đăng Xuất
             </Button>
             <Link to="/shopping-cart" className="bn relative">
-              <Button>
-                <FaShoppingCart />
+              <Button className="shadow galss">
+                <FaShoppingCart className="text-yellow-400 text-xl" />
                 {/* Shopping Cart */}
                 <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded-full px-2 py-1">
                   {getCartQty()}
@@ -132,14 +111,14 @@ const Header: React.FC = () => {
         ) : (
           <>
             <Link to="/login" className="">
-              <Button>
+              <Button className="shadow galss">
                 <FaUser />
                 <span>Đăng Nhập</span>
               </Button>
             </Link>
             <Link to="/shopping-cart" className=" relative">
-              <Button>
-                <FaShoppingCart />
+              <Button className="shadow galss">
+                <FaShoppingCart className="text-yellow-400 text-xl" />
                 {/* Shopping Cart */}
                 <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded-full px-2 py-1">
                   {getCartQty()}
@@ -160,10 +139,7 @@ const Header: React.FC = () => {
         <div className="avatar online flex">
           <div className="w-10 rounded-full">
             <Link to="/login">
-              <img
-                src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
-                alt="Avatar"
-              />
+              <Avatar />
             </Link>
           </div>
         </div>

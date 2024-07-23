@@ -18,6 +18,7 @@ const Home: React.FC = () => {
       price: product.price,
       img: product.img,
       qty: 1,
+      description: ""
     };
     addCartItem(cartItem);
   };
@@ -37,9 +38,7 @@ const Home: React.FC = () => {
   }, []);
   return (
     <div className="">
-      <div>
         <img className="w-full" src={Banner} alt="banner" />
-      </div>
       <div className="text-center mt-[20px] md:m-5">
         <img className="mx-auto" src="" alt="" />
         <h1 className="py-2 text-[1.3rem] md:text-[2rem]">Đồ uống ưa thích</h1>
@@ -81,9 +80,11 @@ const Home: React.FC = () => {
                   </div>
                 </div>
                 <div className="my-[10px] pr-[10px]">
-                  <button className="btn xl:hidden glass bg-red-600 text-white">
+                  <Button
+                    onClick={() => handleAddToCart(product)}
+                    className="btn xl:hidden glass bg-red-600 text-white">
                     +
-                  </button>
+                  </Button>
                 </div>
               </div>
 

@@ -5,9 +5,9 @@ import { Outlet } from "react-router-dom";
 
 function App(): ReactElement {
   return (
-    <div className=" font-mono">
+    <div className="font-mono">
     <Header />
-      <div className=" bg-gray-100 pb-10">
+      <div className="bg-gray-100 pb-10">
       <Outlet/>
       </div>
       <FooterFC />

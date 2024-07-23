@@ -22,11 +22,27 @@ connection.connect((err) => {
   if (err) throw err;
   console.log("Kết Nối CSDL Thành Công!");
 });
-
+//Products
 app.get("/products", (req, res) => {
   connection.query("SELECT * FROM products ", (error, results, fields) => {
     if (error) throw error;
     res.json(results);
+  });
+});
+app.post("/products", (req, res) => {
+  const { name, id_catalog, price, sale, status, views, description, img, img_child } = req.body;
+  if (!name || !id_catalog || !price) {
+    return res.status(400).json({ message: "Tên sản phẩm, ID danh mục và giá là bắt buộc" });
+  }
+
+  const query = "INSERT INTO products (name, id_catalog, price, sale, status, views, description, img, img_child) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+  connection.query(query, [name, id_catalog, price, sale, status, views, description, img, img_child], (error, results) => {
+    if (error) {
+      console.error("Lỗi truy vấn: ", error);
+      res.status(500).send({ error: "Lỗi truy vấn" });
+    } else {
+      res.status(201).send({ message: "Sản phẩm đã được thêm" });
+    }
   });
 });
 
@@ -55,7 +71,7 @@ app.get("/sale", (req, res) => {
     }
   );
 });
-// User
+// Auth
 app.post("/register", (req, res) => {
   const { username, phone, email, address, password, description } = req.body;
   if (!username || !phone || !email || !address || !password) {
@@ -79,7 +95,6 @@ app.post("/register", (req, res) => {
     }
   );
 });
-
 app.post("/login", (req, res) => {
   const { email, password } = req.body || {}; // Thêm fallback giá trị {}
   console.log("Received login request:", req.body);
@@ -118,11 +133,27 @@ app.post("/login", (req, res) => {
     });
   });
 });
-
+//Catalog
 app.get("/catalog", (req, res) => {
   connection.query("SELECT id, name FROM catalog", (error, results, fields) => {
     if (error) throw error;
     res.json(results);
+  });
+});
+app.post("/catalog", (req, res) => {
+  const { name, description } = req.body;
+  if (!name) {
+    return res.status(400).json({ message: "Tên danh mục là bắt buộc" });
+  }
+
+  const query = "INSERT INTO catalog (name, description) VALUES (?, ?)";
+  connection.query(query, [name, description], (error, results) => {
+    if (error) {
+      console.error("Lỗi truy vấn: ", error);
+      res.status(500).send({ error: "Lỗi truy vấn" });
+    } else {
+      res.status(201).send({ message: "Danh mục đã được thêm" });
+    }
   });
 });
 

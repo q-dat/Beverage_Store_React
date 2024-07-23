@@ -4,6 +4,8 @@ import { useShoppingContext } from "../context/ShoppingContext";
 import { CartItem } from "../types/CartItem";
 import { Button } from "react-daisyui";
 import { GiReturnArrow } from "react-icons/gi";
+import { FaCirclePlus, FaPaypal, FaRegTrashCan } from "react-icons/fa6";
+import { FaMinusCircle } from "react-icons/fa";
 
 const ShoppingCart: React.FC = () => {
   const { cartItems, increaseQty, decreaseQty, removeCartItem, clearCart } =
@@ -57,9 +59,9 @@ const ShoppingCart: React.FC = () => {
           {cartItems.length === 0 ? (
             <p>Giỏ hàng của bạn đang trống.</p>
           ) : (
-            <div className="flex flex-col lg:flex-row lg:space-x-4">
+            <div className="flex flex-col  lg:flex-row lg:space-x-4">
               {/* Phần danh sách sản phẩm */}
-              <div className="flex-grow overflow-y-auto max-h-[400px] scrollbar-hide">
+              <div className="flex-grow items-center justify-center overflow-y-auto overflow-x-auto max-h-[400px] scrollbar-hide">
                 <ul>
                   {cartItems.map((item: CartItem) => (
                     <li
@@ -75,25 +77,25 @@ const ShoppingCart: React.FC = () => {
                         <p className="text-lg font-semibold">{item.name}</p>
                         <p className="text-gray-600">{item.price}.000đ</p>
                       </div>
+                      {/* Mô tả */}
+                      <p className="hidden md:line-clamp-1 max-w-[300px]">{item.description}</p>
                       <div className="flex items-center">
-                        <Button
-                          onClick={() => handleDecreaseQty(item.id)}
-                          className="bg-red-500 text-white mx-2"
-                        >
-                          -
-                        </Button>
-                        <span className="text-lg">{item.qty}</span>
-                        <Button
-                          onClick={() => handleIncreaseQty(item.id)}
-                          className="bg-red-500 text-white mx-2"
-                        >
-                          +
-                        </Button>
+                        <div className="p-1 flex flex-row justify-center items-center">
+                          <FaMinusCircle
+                            className="text-xl text-black"
+                            onClick={() => handleDecreaseQty(item.id)}
+                          />
+                          <span className="text-lg text-black mx-2">{item.qty}</span>
+                          <FaCirclePlus
+                            className="text-xl text-black "
+                            onClick={() => handleIncreaseQty(item.id)}
+                          />
+                        </div>
                         <Button
                           onClick={() => handleRemoveItem(item.id)}
                           className="bg-red-600 text-white mx-2"
                         >
-                          Xóa
+                          <FaRegTrashCan /> Xóa
                         </Button>
                       </div>
                     </li>
@@ -101,16 +103,23 @@ const ShoppingCart: React.FC = () => {
                 </ul>
               </div>
               {/* Phần tổng tiền */}
-              <div className="lg:w-64 lg:shrink-0 lg:sticky lg:top-16 lg:bg-white lg:p-4 lg:shadow-lg lg:border lg:border-gray-300">
+              <div className="flex flex-col lg:w-[400px] shadow-xl rounded-sm p-5">
                 <p className="text-lg font-semibold mb-4">
                   Tổng Tiền: {getTotalPrice()}.000đ
                 </p>
-                <Button
-                  onClick={handleClearCart}
-                  className="bg-red-600 text-white w-full"
-                >
-                  Xóa Tất Cả
-                </Button>
+                {/* Btn */}
+                <div className="flex flex-col gap-2">
+                  <Button className="bg-primary text-white">
+                    <FaPaypal />
+                    Thanh toán
+                  </Button>
+                  <Button
+                    onClick={handleClearCart}
+                    className="bg-red-600 text-white w-full"
+                  >
+                    <FaRegTrashCan /> Xóa Tất Cả
+                  </Button>
+                </div>
               </div>
             </div>
           )}
