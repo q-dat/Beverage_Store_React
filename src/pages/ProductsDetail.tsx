@@ -2,8 +2,24 @@ import React, { useEffect, useState } from "react";
 import { getProduct } from "../services/ProductService";
 import { Link, useParams } from "react-router-dom";
 import { Products } from "../types/Products";
+import { useShoppingContext } from "../context/ShoppingContext";
+import { CartItem } from "../types/CartItem";
+import { Button } from "react-daisyui";
 
 const ProductsDetail: React.FC = () => {
+  const { addCartItem } = useShoppingContext();
+  // Thêm Sản Phẩm Vào Giỏ Hàng
+  const handleAddToCart = (product: Products) => {
+    const cartItem: CartItem = {
+      id: product.id.toString(), // Chuyển đổi số thành chuỗi
+      name: product.name,
+      price: product.price,
+      img: product.img,
+      qty: 1,
+    };
+    addCartItem(cartItem);
+  };
+
   const { id } = useParams<{ id: string }>();
   const [product, setProduct] = useState<Products | null>(null);
 
@@ -83,9 +99,12 @@ justify-center items-start "
                 min="1"
                 max="10"
               />
-              <button className="btn glass font-semibold bg-red-500 hover:bg-red-600 text-white">
+              <Button
+                onClick={() => handleAddToCart(product)}
+                className="btn glass font-semibold bg-red-500 hover:bg-red-600 text-white"
+              >
                 Thêm Vào Giỏ Hàng
-              </button>
+              </Button>
             </div>
           </div>
         </div>
