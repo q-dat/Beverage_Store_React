@@ -6,6 +6,7 @@ import { useShoppingContext } from "../context/ShoppingContext";
 import { CartItem } from "../types/CartItem";
 import { Link } from "react-router-dom";
 import { Button } from "react-daisyui";
+import { Banner } from "../assets";
 
 const Home: React.FC = () => {
   const { addCartItem } = useShoppingContext();
@@ -37,7 +38,7 @@ const Home: React.FC = () => {
   return (
     <div className="">
       <div>
-        <img className="w-full" src="./image/slider_1.webp" alt="banner" />
+        <img className="w-full" src={Banner} alt="banner" />
       </div>
       <div className="text-center mt-[20px] md:m-5">
         <img className="mx-auto" src="" alt="" />

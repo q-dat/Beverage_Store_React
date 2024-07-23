@@ -8,6 +8,10 @@ import ProductsDetail from "../pages/ProductsDetail";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 import ShoppingCart from "../pages/ShoppingCart";
+import Admin from "../pages/admin/Admin";
+import DashboardPage from "../pages/admin/DashboardPage";
+import ListProductsPage from "../pages/admin/ListProductsPage";
+import CategoryPage from "../pages/admin/CategoryPage";
 
 export default function AppRouter() {
   return (
@@ -21,6 +25,12 @@ export default function AppRouter() {
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
         <Route path="shopping-cart" element={<ShoppingCart />} />
+      </Route>
+      <Route path="/" element={<Admin />}>
+        <Route index path="admin" element={<DashboardPage />} />
+        <Route path="list-products" element={<ListProductsPage />} />
+        <Route path="category" element={<CategoryPage />} />
+
       </Route>
     </Routes>
   );

@@ -5,6 +5,7 @@ import { FaUser } from "react-icons/fa6";
 import { HiOutlineLogout } from "react-icons/hi";
 import { Link } from "react-router-dom";
 import { useShoppingContext } from "../context/ShoppingContext";
+import { Logo } from "../assets";
 
 const Header: React.FC = () => {
   const { getCartQty } = useShoppingContext();
@@ -78,7 +79,7 @@ const Header: React.FC = () => {
             to="/"
             className="hidden lg:flex btn btn-ghost text-xl justify-center w-full"
           >
-            <img src="/image/logo.webp" alt="Logo" />
+            <img src={Logo} alt="Logo" />
           </Link>
         </div>
       </div>
