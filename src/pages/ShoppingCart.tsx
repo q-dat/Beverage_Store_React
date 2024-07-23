@@ -43,12 +43,12 @@ const ShoppingCart: React.FC = () => {
         ) : (
           <div className="flex flex-col lg:flex-row lg:space-x-4">
             {/* Danh sách sản phẩm */}
-            <div className="flex flex-col lg:w-3/4 overflow-y-auto max-h-[400px] scrollbar-hide">
+            <div className="flex flex-col lg:w-3/4 overflow-y-auto max-h-[400px] scrollbar-hide border border-gray-300 p-2 rounded-lg">
               <ul>
                 {cartItems.map((item: CartItem) => (
                   <li
                     key={item.id}
-                    className="flex justify-between items-center border-b shadow border-gray-300 py-3"
+                    className="flex justify-between items-center border-b shadow border-gray-300 p-3 rounded-lg"
                   >
                     <img
                       src={`./products/${item.img}`}
@@ -89,7 +89,7 @@ const ShoppingCart: React.FC = () => {
             </div>
 
             {/* Tổng tiền */}
-            <div className="flex flex-col lg:w-[400px] shadow-xl rounded-sm p-5">
+            <div className="flex flex-col lg:w-[400px] rounded-lg p-5 border-gray-300 border">
               <p className="text-lg font-semibold mb-4">
                 Tổng Tiền: {getTotalPrice()}.000đ
               </p>
