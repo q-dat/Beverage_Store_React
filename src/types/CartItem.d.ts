@@ -2,6 +2,7 @@ export interface CartItem {
     id: string;
     name: string;
     price: number;
+    img:string;
     qty: number;
   }
   
@@ -16,5 +17,6 @@ export interface CartItem {
     clearCart: () => void;
     delivery: number;
     discount: number;
+    getCartQty: () => number;
   }
   

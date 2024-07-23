@@ -9,8 +9,11 @@ export default {
   theme: {
     extend: {},
   },
-  plugins: [require("daisyui")],
-  daisyui: {
+  plugins: [
+    require("daisyui"),
+    require("tailwind-scrollbar"),
+    require("tailwind-scrollbar-hide"),
+  ],  daisyui: {
     themes: [
       {
         mytheme: {

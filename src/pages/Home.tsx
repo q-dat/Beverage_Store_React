@@ -2,8 +2,25 @@ import React, { useEffect, useState } from "react";
 import { FaSearch, FaCartPlus, FaHeart } from "react-icons/fa";
 import { getProducts } from "../services/ProductService";
 import { Products } from "../types/Products";
+import { useShoppingContext } from "../context/ShoppingContext";
+import { CartItem } from "../types/CartItem";
+import { Link } from "react-router-dom";
+import { Button } from "react-daisyui";
 
 const Home: React.FC = () => {
+  const { addCartItem } = useShoppingContext();
+  // Thêm Sản Phẩm Vào Giỏ Hàng
+  const handleAddToCart = (product: Products) => {
+    const cartItem: CartItem = {
+      id: product.id.toString(), // Chuyển đổi số thành chuỗi
+      name: product.name,
+      price: product.price,
+      img: product.img,
+      qty: 1,
+    };
+    addCartItem(cartItem);
+  };
+  //Get dữ liệu
   const [products, setProducts] = useState<Products[]>([]);
 
   useEffect(() => {
@@ -25,9 +42,7 @@ const Home: React.FC = () => {
       </div>
       <div className="text-center mt-[20px] md:m-5">
         <img className="mx-auto" src="" alt="" />
-        <h1 className="py-2 text-[1.3rem] md:text-[2rem]">
-          Đồ uống ưa thích
-        </h1>
+        <h1 className="py-2 text-[1.3rem] md:text-[2rem]">Đồ uống ưa thích</h1>
       </div>
 
       <section className="px-[10px] xl:px-[150px]">
@@ -74,20 +89,23 @@ const Home: React.FC = () => {
 
               <div className="hidden absolute inset-0 xl:flex justify-center items-center flex-row transform transition ease-in-out duration-1000 rounded-[10px] opacity-0 hover:opacity-100 hover:bg-white w-full hover:bg-opacity-30">
                 <div className="space-x-2">
-                  <a href={`/detail/${product.id}`}>
-                    <button className="btn bg-transparent border-red-500 rounded-full hover:scale-[1.1] hover:glass hover:bg-red-700 hover:text-white">
+                  <Link to={`/detail/${product.id}`}>
+                    <Button className="btn bg-transparent border-red-500 rounded-full hover:scale-[1.1] hover:glass hover:bg-red-700 hover:text-white">
                       <FaSearch />
-                    </button>
-                  </a>
-                  <button className="btn text-white bg-red-600 glass hover:scale-[1.1] hover:text-red-600 hover:bg-white hover:border-solid hover:border-red-500 hover:border-[1px]">
+                    </Button>
+                  </Link>
+                  <Button
+                    onClick={() => handleAddToCart(product)}
+                    className="btn text-white bg-red-600 glass hover:scale-[1.1] hover:text-red-600 hover:bg-white hover:border-solid hover:border-red-500 hover:border-[1px]"
+                  >
                     <FaCartPlus />
                     Giỏ Hàng
-                  </button>
-                  <a href="/">
-                    <button className="btn bg-transparent border-red-500 rounded-full hover:scale-[1.1] hover:glass hover:bg-red-700 hover:text-white">
+                  </Button>
+                  <Link to="/">
+                    <Button className="btn bg-transparent border-red-500 rounded-full hover:scale-[1.1] hover:glass hover:bg-red-700 hover:text-white">
                       <FaHeart />
-                    </button>
-                  </a>
+                    </Button>
+                  </Link>
                 </div>
               </div>
             </div>

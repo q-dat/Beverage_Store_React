@@ -52,3 +52,4 @@ export class Products {
       this.description = description;
     }
   }
+  

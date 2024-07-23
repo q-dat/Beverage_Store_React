@@ -4,8 +4,10 @@ import { FaShoppingCart } from "react-icons/fa";
 import { FaUser } from "react-icons/fa6";
 import { HiOutlineLogout } from "react-icons/hi";
 import { Link } from "react-router-dom";
+import { useShoppingContext } from "../context/ShoppingContext";
 
 const Header: React.FC = () => {
+  const { getCartQty } = useShoppingContext();
   const [active, setActive] = useState<string>("Trang Chủ");
   const [username, setUsername] = useState<string | null>(null);
 
@@ -116,20 +118,32 @@ const Header: React.FC = () => {
             <Button onClick={handleLogout} className="">
               <HiOutlineLogout /> Đăng Xuất
             </Button>
-            <Link to="/shopping-cart" className="btn">
-              <FaShoppingCart />
-              {/* Shopping Cart */}
+            <Link to="/shopping-cart" className="bn relative">
+              <Button>
+                <FaShoppingCart />
+                {/* Shopping Cart */}
+                <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded-full px-2 py-1">
+                  {getCartQty()}
+                </span>
+              </Button>
             </Link>
           </>
         ) : (
           <>
-            <Link to="/login" className="btn">
-              <FaUser />
-              <span>Đăng Nhập</span>
+            <Link to="/login" className="">
+              <Button>
+                <FaUser />
+                <span>Đăng Nhập</span>
+              </Button>
             </Link>
-            <Link to="/shopping-cart" className="btn">
-              <FaShoppingCart />
-              {/* Shopping Cart */}
+            <Link to="/shopping-cart" className=" relative">
+              <Button>
+                <FaShoppingCart />
+                {/* Shopping Cart */}
+                <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded-full px-2 py-1">
+                  {getCartQty()}
+                </span>
+              </Button>
             </Link>
           </>
         )}

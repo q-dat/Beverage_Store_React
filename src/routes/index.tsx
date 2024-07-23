@@ -21,7 +21,6 @@ export default function AppRouter() {
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
         <Route path="shopping-cart" element={<ShoppingCart />} />
-        
       </Route>
     </Routes>
   );

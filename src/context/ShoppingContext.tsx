@@ -116,10 +116,13 @@ export const ShoppingProvider: React.FC<ShoppingProviderProps> = ({ children }) 
   const clearCart = () => {
     setCartItems([]);
   };
-
+  //Hàm lấy số lượng giỏ hàng
+  const getCartQty = (): number => {
+    return cartItems.reduce((total, item) => total + item.qty, 0);
+  };
   return (
     // Cung cấp context cho các components con
-    <ShoppingContext.Provider value={{ cartItems, cartQty, totalPrice, increaseQty, decreaseQty, addCartItem, removeCartItem, clearCart, delivery, discount }}>
+    <ShoppingContext.Provider value={{ cartItems, cartQty, totalPrice, increaseQty, decreaseQty, addCartItem, removeCartItem, clearCart, delivery, discount,getCartQty }}>
       {children}
     </ShoppingContext.Provider>
   );

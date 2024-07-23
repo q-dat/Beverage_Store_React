@@ -10,8 +10,22 @@ import { Button, Input } from "react-daisyui";
 import { IoSearchOutline } from "react-icons/io5";
 import { Link } from "react-router-dom";
 import { searchProductsByName } from "../services/SearchService";
+import { useShoppingContext } from "../context/ShoppingContext";
+import { CartItem } from "../types/CartItem";
 
 const Shop: React.FC = () => {
+  const { addCartItem } = useShoppingContext();
+  // Thêm Sản Phẩm Vào Giỏ Hàng
+  const handleAddToCart = (product: Products) => {
+    const cartItem: CartItem = {
+      id: product.id.toString(), // Chuyển đổi số thành chuỗi
+      name: product.name,
+      price: product.price,
+      img: product.img,
+      qty: 1,
+    };
+    addCartItem(cartItem);
+  };
   // Tìm Kiếm/Search
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [searchResults, setSearchResults] = useState<Products[]>([]);
@@ -101,13 +115,21 @@ const Shop: React.FC = () => {
 
   return (
     <div>
-        <div className="glass mb-10 lg:px-20 py-2 px-[10px] text-sm breadcrumbs">
-    <ul className="font-light">
-        <li><Link to="/"><i className="fa-solid fa-house pr-2"></i>Trang Chủ</Link></li>
-        <li><Link to="/shop"><i className="fa-solid fa-circle-info pr-2"></i>Sản Phẩm</Link></li>
-    </ul>
-</div>
-{/* <!-- ------------------------------------------------------------------------------------------------------- --> */}
+      <div className="glass mb-10 lg:px-20 py-2 px-[10px] text-sm breadcrumbs">
+        <ul className="font-light">
+          <li>
+            <Link to="/">
+              <i className="fa-solid fa-house pr-2"></i>Trang Chủ
+            </Link>
+          </li>
+          <li>
+            <Link to="/shop">
+              <i className="fa-solid fa-circle-info pr-2"></i>Sản Phẩm
+            </Link>
+          </li>
+        </ul>
+      </div>
+      {/* <!-- ------------------------------------------------------------------------------------------------------- --> */}
       {/* Input search */}
       <div className="relative mx-[10px] xl:mx-[150px] flex items-center ">
         <Input
@@ -175,27 +197,33 @@ const Shop: React.FC = () => {
                   </div>
                 </div>
                 <div className="my-[10px] pr-[10px]">
-                  <button className="btn xl:hidden glass bg-red-600 text-white">
+                  <Button
+                    onClick={() => handleAddToCart(product)}
+                    className="btn xl:hidden glass bg-red-600 text-white"
+                  >
                     +
-                  </button>
+                  </Button>
                 </div>
               </div>
 
               <div className="hidden absolute inset-0 xl:flex justify-center items-center flex-row transform transition ease-in-out duration-1000 rounded-[10px] opacity-0 hover:opacity-100 hover:bg-white w-full hover:bg-opacity-30">
                 <div className="space-x-2">
                   <Link to={`/detail/${product.id}`}>
-                    <button className="btn bg-transparent border-red-500 rounded-full hover:scale-[1.1] hover:glass hover:bg-red-700 hover:text-white">
+                    <Button className="btn bg-transparent border-red-500 rounded-full hover:scale-[1.1] hover:glass hover:bg-red-700 hover:text-white">
                       <FaSearch />
-                    </button>
+                    </Button>
                   </Link>
-                  <button className="btn text-white bg-red-600 glass hover:scale-[1.1] hover:text-red-600 hover:bg-white hover:border-solid hover:border-red-500 hover:border-[1px]">
+                  <Button
+                    onClick={() => handleAddToCart(product)}
+                    className="btn text-white bg-red-600 glass hover:scale-[1.1] hover:text-red-600 hover:bg-white hover:border-solid hover:border-red-500 hover:border-[1px]"
+                  >
                     <FaCartPlus />
                     Giỏ Hàng
-                  </button>
+                  </Button>
                   <Link to="/">
-                    <button className="btn bg-transparent border-red-500 rounded-full hover:scale-[1.1] hover:glass hover:bg-red-700 hover:text-white">
+                    <Button className="btn bg-transparent border-red-500 rounded-full hover:scale-[1.1] hover:glass hover:bg-red-700 hover:text-white">
                       <FaHeart />
-                    </button>
+                    </Button>
                   </Link>
                 </div>
               </div>
