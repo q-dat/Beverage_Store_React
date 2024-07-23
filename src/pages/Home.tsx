@@ -34,9 +34,8 @@ const Home: React.FC = () => {
     };
     fetchProducts();
   }, []);
-
   return (
-    <div>
+    <div className="">
       <div>
         <img className="w-full" src="./image/slider_1.webp" alt="banner" />
       </div>

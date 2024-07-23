@@ -1,7 +1,8 @@
-// src/context/ShoppingContext.tsx
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { CartItem, ShoppingContextType } from '../types/CartItem';
 import { getProducts } from '../services/ProductService';
+import { toast, ToastContainer } from 'react-toastify'; // Import thư viện toast
+import 'react-toastify/dist/ReactToastify.css'; // Import CSS của react-toastify
 
 // Tạo context cho giỏ hàng
 const ShoppingContext = createContext<ShoppingContextType | undefined>(undefined);
@@ -66,6 +67,7 @@ export const ShoppingProvider: React.FC<ShoppingProviderProps> = ({ children }) 
         }
       });
       setCartItems(newItems);
+      toast.success('Số lượng sản phẩm đã được tăng'); // Thông báo khi tăng số lượng
     }
   };
 
@@ -84,6 +86,7 @@ export const ShoppingProvider: React.FC<ShoppingProviderProps> = ({ children }) 
           }
         });
         setCartItems(newItems);
+        toast.info('Số lượng sản phẩm đã được giảm'); // Thông báo khi giảm số lượng
       }
     }
   };
@@ -100,9 +103,11 @@ export const ShoppingProvider: React.FC<ShoppingProviderProps> = ({ children }) 
         }
       });
       setCartItems(newItems);
+      toast.success('Sản phẩm đã được thêm vào giỏ hàng'); // Thông báo khi thêm sản phẩm
     } else {
       const newItem = { ...product, qty: 1 };
       setCartItems([...cartItems, newItem]);
+      toast.success('Sản phẩm mới đã được thêm vào giỏ hàng'); // Thông báo khi thêm sản phẩm mới
     }
   };
 
@@ -110,21 +115,27 @@ export const ShoppingProvider: React.FC<ShoppingProviderProps> = ({ children }) 
   const removeCartItem = (id: string) => {
     const newItems = cartItems.filter(item => item.id !== id);
     setCartItems(newItems);
+    toast.error('Sản phẩm đã bị xóa khỏi giỏ hàng'); // Thông báo khi xóa sản phẩm
   };
 
   // Hàm xóa toàn bộ giỏ hàng
   const clearCart = () => {
     setCartItems([]);
+    toast.info('Giỏ hàng đã được xóa'); // Thông báo khi xóa toàn bộ giỏ hàng
   };
-  //Hàm lấy số lượng giỏ hàng
+
+  // Hàm lấy số lượng giỏ hàng
   const getCartQty = (): number => {
     return cartItems.reduce((total, item) => total + item.qty, 0);
   };
+
   return (
-    // Cung cấp context cho các components con
-    <ShoppingContext.Provider value={{ cartItems, cartQty, totalPrice, increaseQty, decreaseQty, addCartItem, removeCartItem, clearCart, delivery, discount,getCartQty }}>
-      {children}
-    </ShoppingContext.Provider>
+    <>
+      <ShoppingContext.Provider value={{ cartItems, cartQty, totalPrice, increaseQty, decreaseQty, addCartItem, removeCartItem, clearCart, delivery, discount, getCartQty }}>
+        {children}
+      </ShoppingContext.Provider>
+      <ToastContainer /> {/* Thêm ToastContainer vào tree */}
+    </>
   );
 };
 

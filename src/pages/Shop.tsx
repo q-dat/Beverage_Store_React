@@ -114,7 +114,7 @@ const Shop: React.FC = () => {
   };
 
   return (
-    <div>
+    <div className="">
       <div className="glass mb-10 lg:px-20 py-2 px-[10px] text-sm breadcrumbs">
         <ul className="font-light">
           <li>
