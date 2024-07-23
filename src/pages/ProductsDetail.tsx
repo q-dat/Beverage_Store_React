@@ -16,6 +16,7 @@ const ProductsDetail: React.FC = () => {
       price: product.price,
       img: product.img,
       qty: 1,
+      description: ""
     };
     addCartItem(cartItem);
   };
@@ -101,7 +102,7 @@ justify-center items-start "
               />
               <Button
                 onClick={() => handleAddToCart(product)}
-                className="btn glass font-semibold bg-red-500 hover:bg-red-600 text-white"
+                className=" glass font-semibold bg-red-500 hover:bg-red-600 text-white"
               >
                 Thêm Vào Giỏ Hàng
               </Button>

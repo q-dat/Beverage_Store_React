@@ -13,7 +13,7 @@ export interface Products {
 }
 
 // Catalog interface
-export interface Catalog {
+export interface Catalogs {
   id: number;
   name: string;
   img: string | null;

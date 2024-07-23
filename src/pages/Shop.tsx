@@ -23,6 +23,7 @@ const Shop: React.FC = () => {
       price: product.price,
       img: product.img,
       qty: 1,
+      description: "",
     };
     addCartItem(cartItem);
   };
@@ -142,23 +143,23 @@ const Shop: React.FC = () => {
         <IoSearchOutline className="absolute right-2 h-5 w-5 cursor-pointer text-black " />
       </div>
       {/* Button Categories */}
-      <div className="px-[10px] xl:px-[150px] ">
+      <div className="px-[10px] xl:px-[150px]">
         <p className="font-bold my-5 text-4xl">Danh Mục</p>
-        <Button
-          className="bg-primary text-white hover:bg-white hover:text-primary hover:bg-opacity-50"
-          onClick={() => handleCategoryClick(null)}
-        >
-          Tất cả sản phẩm
-        </Button>
-        {categories.map((category) => (
           <Button
-            onClick={() => handleCategoryClick(category.id)}
-            key={category.id}
-            className="md:mx-2 bg-primary text-white hover:bg-white hover:text-primary hover:bg-opacity-50"
+            className="bg-primary text-white hover:bg-white hover:text-primary hover:bg-opacity-50"
+            onClick={() => handleCategoryClick(null)}
           >
-            {category.name}
+            Tất cả sản phẩm
           </Button>
-        ))}
+          {categories.map((category) => (
+            <Button
+              onClick={() => handleCategoryClick(category.id)}
+              key={category.id}
+              className="md:mx-2 bg-primary text-white hover:bg-white hover:text-primary hover:bg-opacity-50"
+            >
+              {category.name}
+            </Button>
+          ))}
       </div>
       {/* Products */}
       <section className="mt-10 px-[10px] xl:px-[150px]">
@@ -166,7 +167,7 @@ const Shop: React.FC = () => {
           {(searchTerm ? searchResults : products).map((product) => (
             <div
               key={product.id}
-              className="relative border-gray-300 border-[1px] rounded-[10px]"
+              className="relative shadow border-gray-300 border-[1px] rounded-[10px]"
             >
               <Link to={`/detail/${product.id}`}>
                 <img
@@ -199,7 +200,7 @@ const Shop: React.FC = () => {
                 <div className="my-[10px] pr-[10px]">
                   <Button
                     onClick={() => handleAddToCart(product)}
-                    className="btn xl:hidden glass bg-red-600 text-white"
+                    className=" xl:hidden glass bg-red-600 text-white"
                   >
                     +
                   </Button>
@@ -209,19 +210,19 @@ const Shop: React.FC = () => {
               <div className="hidden absolute inset-0 xl:flex justify-center items-center flex-row transform transition ease-in-out duration-1000 rounded-[10px] opacity-0 hover:opacity-100 hover:bg-white w-full hover:bg-opacity-30">
                 <div className="space-x-2">
                   <Link to={`/detail/${product.id}`}>
-                    <Button className="btn bg-transparent border-red-500 rounded-full hover:scale-[1.1] hover:glass hover:bg-red-700 hover:text-white">
+                    <Button className=" bg-transparent border-red-500 rounded-full hover:scale-[1.1] hover:glass hover:bg-red-700 hover:text-white">
                       <FaSearch />
                     </Button>
                   </Link>
                   <Button
                     onClick={() => handleAddToCart(product)}
-                    className="btn text-white bg-red-600 glass hover:scale-[1.1] hover:text-red-600 hover:bg-white hover:border-solid hover:border-red-500 hover:border-[1px]"
+                    className=" text-white bg-red-600 glass hover:scale-[1.1] hover:text-red-600 hover:bg-white hover:border-solid hover:border-red-500 hover:border-[1px]"
                   >
                     <FaCartPlus />
                     Giỏ Hàng
                   </Button>
                   <Link to="/">
-                    <Button className="btn bg-transparent border-red-500 rounded-full hover:scale-[1.1] hover:glass hover:bg-red-700 hover:text-white">
+                    <Button className=" bg-transparent border-red-500 rounded-full hover:scale-[1.1] hover:glass hover:bg-red-700 hover:text-white">
                       <FaHeart />
                     </Button>
                   </Link>

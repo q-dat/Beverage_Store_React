@@ -134,7 +134,7 @@ export const ShoppingProvider: React.FC<ShoppingProviderProps> = ({ children }) 
       <ShoppingContext.Provider value={{ cartItems, cartQty, totalPrice, increaseQty, decreaseQty, addCartItem, removeCartItem, clearCart, delivery, discount, getCartQty }}>
         {children}
       </ShoppingContext.Provider>
-      <ToastContainer /> {/* Thêm ToastContainer vào tree */}
+      <ToastContainer className="mt-[100px]" /> {/* Thêm ToastContainer vào tree */}
     </>
   );
 };

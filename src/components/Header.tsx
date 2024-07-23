@@ -81,7 +81,7 @@ const Header: React.FC = () => {
                 className={`${
                   active === item.name
                     ? "border-b-2 rounded-lg border-primary font-light text-primary"
-                    : "font-light bg-primary hover:bg-opacity-50 hover:bg-primary rounded-lg text-white "
+                    : "font-light bg-gray-100 hover:bg-opacity-50 hover:bg-primary rounded-md text-black shadow glass "
                 }`}
                 onClick={() => setActive(item.name)}
               >
@@ -112,7 +112,7 @@ const Header: React.FC = () => {
           <>
             <Link to="/login" className="">
               <Button className="shadow galss">
-                <FaUser />
+                <FaUser className="" />
                 <span>Đăng Nhập</span>
               </Button>
             </Link>
