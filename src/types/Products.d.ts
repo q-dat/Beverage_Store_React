@@ -27,5 +27,5 @@ interface IResponse<T> {
   data: T;
 }
 
-export type IProductResponse = IResponse<Product[]>;
-export type IProductDetailResponse = Product;
+export type IProductResponse = IResponse<Products[]>;
+export type IProductDetailResponse = Products;

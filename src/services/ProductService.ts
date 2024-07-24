@@ -21,3 +21,13 @@ export const getProduct = async (productId: string) => {
     throw error;
   }
 };
+//Sửa Sản Phẩm 
+export const patchProduct = async (productId: string, updatedProduct: any) => {
+  try {
+    const response = await axios.patch(`${API_URL}/${productId}`, updatedProduct);
+    return response.data;
+  } catch (error) {
+    console.error("Error updating product: ", error);
+    throw error;
+  }
+};

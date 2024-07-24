@@ -10,8 +10,8 @@ import { FaMinusCircle } from "react-icons/fa";
 const ShoppingCart: React.FC = () => {
   const { cartItems, increaseQty, decreaseQty, removeCartItem, clearCart } =
     useShoppingContext();
+  //Chuyển trang
   const navigate = useNavigate();
-
   // Hàm tính tổng tiền
   const getTotalPrice = (): number =>
     cartItems.reduce((total, item) => total + item.price * item.qty, 0);
