@@ -25,10 +25,7 @@ const CategoryPage: React.FC<{}> = () => {
     setCurrentModal(null);
   };
   //Get dữ liệu
-  // Danh Mục/Catalog
   const [categories, setCategories] = useState<Catalogs[]>([]);
-
-  // Lấy danh mục ban đầu
   useEffect(() => {
     const loadCategories = async () => {
       try {

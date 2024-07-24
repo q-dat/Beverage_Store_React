@@ -1,21 +1,9 @@
-import { configureStore, Reducer } from "@reduxjs/toolkit";
-import { reducer as formReducer } from "redux-form";
-import { Catalogs, Products } from "../types/Products";
-
-const productsReducer: Reducer<Products[]> = (state = [], _action) => {
-  return state;
-};
-
-const catalogsReducer: Reducer<Catalogs[]> = (state = [], _action) => {
-  return state;
-};
-
-const store = configureStore({
-  reducer: {
-    products: productsReducer,
-    users: catalogsReducer,
-    form: formReducer,
-  },
-});
-
-export default store;
+// import { configureStore } from "@reduxjs/toolkit";
+// import { productsApi } from "../services/admin/products.services";
+// export const store = configureStore({
+//   reducer: {
+//     [productsApi.reducerPath]: productsApi.reducer,
+//   },
+//   middleware: (getDefaultMiddleware) =>
+//     getDefaultMiddleware().concat(productsApi.middleware),
+// });
