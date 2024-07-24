@@ -38,7 +38,7 @@ useEffect(() => {
   };
   fetchProducts();
 }, []);
-
+//
   return (
     <div className="w-full">
       <NavbarMobile Title_NavbarMobile="Danh sách sản phẩm" />

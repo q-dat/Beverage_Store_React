@@ -6,19 +6,19 @@ import TableListAdmin from "../../components/admin/TablelistAdmin";
 import { FaPenToSquare } from "react-icons/fa6";
 import { RiAddBoxLine } from "react-icons/ri";
 import NavbarMobile from "../../components/Reponsive/Mobile/NavbarMobile";
-import CreateProduct from "../../components/Modal/ModalListProducts/CreateProduct";
-import EditProduct from "../../components/Modal/ModalListProducts/EditProduct";
-import DeleteProduct from "../../components/Modal/ModalListProducts/DeleteProduct";
-import { Catalogs } from "../../types/Products";
 import { fetchCategories } from "../../services/CategoryService";
+import DeleteCategories from "../../components/Modal/ModalListCategories/DeleteCategories";
+import CreateCategories from "../../components/Modal/ModalListCategories/CreateCategories";
+import { Catalogs } from "../../types/Products";
+import EditCategories from "../../components/Modal/ModalListCategories/EditCategories";
 
 const CategoryPage: React.FC<{}> = () => {
   const [currentModal, setCurrentModal] = useState<string | null>(null);
   const [, setSelectedList] = useState<string | null>(null);
 
-  const openModal = (modalName: string, productId?: string) => {
+  const openModal = (modalName: string, CatDeleteCategoriesId?: string) => {
     setCurrentModal(modalName);
-    if (productId) setSelectedList(productId);
+    if (CatDeleteCategoriesId) setSelectedList(CatDeleteCategoriesId);
   };
 
   const closeModal = () => {
@@ -105,15 +105,15 @@ const CategoryPage: React.FC<{}> = () => {
                       {/* Confirmation Modal */}
                       <div>
                         {/* Create */}
-                        <CreateProduct
+                        <CreateCategories
                           isOpen={currentModal === "create"}
                           onClose={closeModal}
                         />
-                        <EditProduct
+                        <EditCategories
                           isOpen={currentModal === "edit"}
                           onClose={closeModal}
                         />
-                        <DeleteProduct
+                        <DeleteCategories
                           isOpen={currentModal === "delete"}
                           onClose={closeModal}
                         />

@@ -1,6 +1,6 @@
 // Product interface
 export interface Products {
-  id: number;
+  id: string;
   id_catalog: number;
   name: string;
   img: string;
