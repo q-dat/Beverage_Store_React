@@ -94,9 +94,12 @@ const Header: React.FC = () => {
       <div className="navbar-end space-x-5 hidden xl:flex">
         {username ? (
           <>
-            <span className="text-black">Xin chào, {username}</span>
+            <p className="text-black">
+              Xin chào,<span className="font-bold">{username}</span>
+            </p>
             <Button onClick={handleLogout} className="shadow galss">
-              <HiOutlineLogout /> Đăng Xuất
+              <HiOutlineLogout className="text-xl" />
+              Đăng Xuất
             </Button>
             <Link to="/shopping-cart" className="bn relative">
               <Button className="shadow galss">
@@ -112,7 +115,7 @@ const Header: React.FC = () => {
           <>
             <Link to="/login" className="">
               <Button className="shadow galss">
-                <FaUser className="" />
+                <FaUser className="text-xl" />
                 <span>Đăng Nhập</span>
               </Button>
             </Link>
