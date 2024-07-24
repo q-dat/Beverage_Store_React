@@ -25,15 +25,15 @@ const DeleteProduct: React.FC<ModalDeleteAdminProps> = ({
       onClick={handleOverlayClick}
       className="modal-overlay fixed inset-0 z-50 flex w-full items-center justify-center bg-black bg-opacity-10"
     >
-      <div className="flex flex-col items-center rounded-lg bg-white p-5 shadow dark:bg-gray-800">
+      <div className="flex flex-col items-center rounded-lg bg-white p-5 shadow ">
         <div className="">
-          <p className="font-bold text-black dark:text-white">
+          <p className="font-bold text-black ">
             Xác nhận xoá
             <label className="pl-1 text-secondary">Task</label>
           </p>
         </div>
 
-        <div className="py-5 text-gray-50">
+        <div className="py-5 text-gray-500">
           Task này sẽ bị xoá <br /> sau khi bạn nhấn "
           <label className="font-bold text-primary">Đồng ý</label>"
         </div>

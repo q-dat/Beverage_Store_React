@@ -1,6 +1,6 @@
 import React from "react";
 import { Button } from "react-daisyui";
-import InputForm from "../../InputForm";
+import InputForm from "../../admin/InputForm";
 import { FaPencil } from "react-icons/fa6";
 import LabelForm from "../../admin/LabelForm";
 //Icon
@@ -27,7 +27,7 @@ const EditProduct: React.FC<ModalCreateAdminProps> = ({ isOpen, onClose }) => {
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="flex flex-col  rounded-lg bg-white p-5 text-start  shadow dark:bg-gray-800"
+        className="flex flex-col  rounded-lg bg-white p-5 text-start  shadow "
       >
         {/*  */}
         <div className="my-10 flex flex-col items-center  xl:mx-16 xl:flex-row xl:items-start xl:justify-between">
