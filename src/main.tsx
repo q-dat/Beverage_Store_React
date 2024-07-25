@@ -4,21 +4,21 @@ import "./index.css";
 import { BrowserRouter } from "react-router-dom";
 import AppRouter from "./routes/index.tsx";
 import { ShoppingProvider } from "./context/ShoppingContext.tsx";
-// import { Provider } from "react-redux";
-// import { ApiProvider } from "@reduxjs/toolkit/query/react";
-// import { store } from "./redux/store.ts";
-// import { productsApi } from "./services/admin/products.services.ts";
+import { Provider } from "react-redux";
+import { ApiProvider } from "@reduxjs/toolkit/query/react";
+import { store } from "./redux/store.ts";
+import { productsApi } from "./services/admin/products.services.ts";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    {/* <Provider store={store}> */}
-      {/* <ApiProvider api={productsApi}> */}
+    <Provider store={store}>
+      <ApiProvider api={productsApi}>
         <ShoppingProvider>
           <BrowserRouter>
             <AppRouter />
           </BrowserRouter>
         </ShoppingProvider>
-      {/* </ApiProvider> */}
-    {/* // </Provider> */}
+      </ApiProvider>
+    </Provider>
   </React.StrictMode>
 );
