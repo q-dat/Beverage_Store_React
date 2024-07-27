@@ -1,44 +1,104 @@
-import React, { useEffect, useState } from "react";
-import { Table, Button } from "react-daisyui";
-import { MdDelete } from "react-icons/md";
-import NavtitleAdmin from "../../components/admin/NavtitleAdmin";
-import TableListAdmin from "../../components/admin/TablelistAdmin";
-import { FaCircleInfo, FaPenToSquare } from "react-icons/fa6";
-import { RiAddBoxLine } from "react-icons/ri";
-import NavbarMobile from "../../components/Reponsive/Mobile/NavbarMobile";
-import CreateProduct from "../../components/Modal/ModalListProducts/CreateProduct";
-import EditProduct from "../../components/Modal/ModalListProducts/EditProduct";
-import DeleteProduct from "../../components/Modal/ModalListProducts/DeleteProduct";
-import { Products } from "../../types/Products";
-import { getProducts } from "../../services/ProductService";
+import React, { useEffect, useState, useRef } from 'react';
+import { Table, Button } from 'react-daisyui';
+import { MdDelete } from 'react-icons/md';
+import NavtitleAdmin from '../../components/admin/NavtitleAdmin';
+import TableListAdmin from '../../components/admin/TablelistAdmin';
+import { FaCircleInfo, FaPenToSquare } from 'react-icons/fa6';
+import { RiAddBoxLine } from 'react-icons/ri';
+import NavbarMobile from '../../components/Reponsive/Mobile/NavbarMobile';
+import { Products, Catalogs } from '../../types/Products';
+import { getProducts, createProduct, updateProduct, deleteProduct, getCatalogs } from '../../services/ProductService';
+import { useDispatch } from 'react-redux';
+import { addProduct, updateProduct as updateProductAction, deleteProduct as deleteProductAction } from '../../slices/productsSlice';
+import ProductForm from '../../components/Form/ProductForm';
+import { reset } from 'redux-form';
+import { toast } from 'react-toastify';
 
-const ListProductsPage: React.FC<{}> = () => {
-  const [currentModal, setCurrentModal] = useState<string | null>(null);
-  const [, setSelectedList] = useState<string | null>(null);
+const ListProductsPage: React.FC = () => {
+  const [products, setProducts] = useState<Products[]>([]);
+  const [categories, setCategories] = useState<{ [key: number]: string }>({});
+  const [selectedProduct, setSelectedProduct] = useState<Products | null>(null);
+  const [formMode, setFormMode] = useState<'add' | 'edit'>('add');
+  const [showForm, setShowForm] = useState(false);
+  const dispatch = useDispatch();
+  const formRef = useRef<HTMLDivElement>(null);
 
-  const openModal = (modalName: string, productId?: string) => {
-    setCurrentModal(modalName);
-    if (productId) setSelectedList(productId);
+  useEffect(() => {
+    const fetchProductsAndCategories = async () => {
+      try {
+        const fetchedProducts = await getProducts();
+        setProducts(fetchedProducts);
+
+        const fetchedCategories = await getCatalogs();
+        const categoriesMap: { [key: number]: string } = {};
+        fetchedCategories.forEach((category: Catalogs) => {
+          categoriesMap[category.id] = category.name;
+        });
+        setCategories(categoriesMap);
+      } catch (error) {
+        console.error('Error fetching products or categories: ', error);
+        toast.error('Failed to fetch products or categories');
+      }
+    };
+    fetchProductsAndCategories();
+  }, []);
+
+  const handleOpenForm = (mode: 'add' | 'edit', product?: Products) => {
+    setFormMode(mode);
+    setSelectedProduct(product || null);
+    setShowForm(true);
   };
 
-  const closeModal = () => {
-    setCurrentModal(null);
+  const handleCloseForm = () => {
+    setShowForm(false);
+    setSelectedProduct(null);
+    dispatch(reset('productForm'));
   };
-//Get dữ liệu
-const [products, setProducts] = useState<Products[]>([]);
 
-useEffect(() => {
-  const fetchProducts = async () => {
+  const handleSubmit = async (values: Products) => {
     try {
-      const fetchedProducts = await getProducts();
-      setProducts(fetchedProducts);
+      if (formMode === 'add') {
+        await createProduct(values);
+        dispatch(addProduct(values));
+        toast.success('Product added successfully');
+      } else if (formMode === 'edit' && selectedProduct) {
+        await updateProduct(selectedProduct.id, values);
+        dispatch(updateProductAction(values));
+        toast.success('Product updated successfully');
+      }
+      handleCloseForm();
+      setProducts(await getProducts());
     } catch (error) {
-      console.error("Error fetching products: ", error);
+      console.error('Error saving product: ', error);
+      toast.error('Failed to save product');
     }
   };
-  fetchProducts();
-}, []);
-//
+
+  const handleDelete = async (productId: string) => {
+    try {
+      await deleteProduct(productId);
+      dispatch(deleteProductAction(productId));
+      toast.success('Product deleted successfully');
+      setProducts(await getProducts());
+    } catch (error) {
+      console.error('Error deleting product: ', error);
+      toast.error('Failed to delete product');
+    }
+  };
+
+  const handleClickOutside = (event: MouseEvent) => {
+    if (formRef.current && !formRef.current.contains(event.target as Node)) {
+      handleCloseForm();
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   return (
     <div className="w-full">
       <NavbarMobile Title_NavbarMobile="Danh sách sản phẩm" />
@@ -46,24 +106,16 @@ useEffect(() => {
         <NavtitleAdmin
           Title_NavtitleAdmin="Danh sách sản phẩm"
           Btn_Create={
-            <>
-              <Button
-                color="primary"
-                onClick={() => openModal("create")}
-                className=" text-sm font-light text-white"
-              >
-                <div className="flex items-center space-x-1">
-                  <RiAddBoxLine className="text-xl" />
-                  <p> Thêm</p>
-                </div>
-              </Button>
-            </>
+            <Button color="primary" className="text-sm font-light text-white" onClick={() => handleOpenForm('add')}>
+              <div className="flex items-center space-x-1">
+                <RiAddBoxLine className="text-xl" />
+                <p> Thêm</p>
+              </div>
+            </Button>
           }
         />
-        {/* DashboardChart */}
         <TableListAdmin
-          Title_TableListAdmin={`Danh sách sản phẩm vừa cập nhật gần đây (${products.length})`}
-          // Table_head
+          Title_TableListAdmin={`Danh sách sản phẩm (${products.length})`}
           table_head={
             <Table.Head className="bg-primary text-center text-white">
               <span>Số thứ tự</span>
@@ -74,71 +126,55 @@ useEffect(() => {
               <span>Trạng thái</span>
             </Table.Head>
           }
-          // Table_body
           table_body={
             <Table.Body className="text-center text-sm">
               {products.map((row, index) => (
                 <Table.Row key={row.id}>
                   <span className="line-clamp-1">#{index + 1}</span>
-                  <span className="line-clamp-1"><img width={80} height={80} src={`./products/${row.img}`} alt="" /></span>
+                  <span className="line-clamp-1">
+                    <img width={80} height={80} src={`./products/${row.img}`} alt={row.name} />
+                  </span>
                   <span className="line-clamp-1">{row.name}</span>
-                  <span className="line-clamp-1">{row.name}</span>
-                  <span className="line-clamp-1">{row.name}</span>
-                  {/* Status Btn */}
+                  <span className="line-clamp-1">{categories[row.id_catalog]}</span>
+                  <span className="line-clamp-1">{row.price}</span>
                   <span>
-                    <div>
-                      <details>
-                        <summary className="inline cursor-pointer text-base text-warning">
-                          <div className="flex items-center justify-center px-[55px] py-2">
-                            <FaCircleInfo />
-                          </div>
-                        </summary>
-                        {/* Edit Btn */}
-                        <div className="flex flex-col items-center justify-center space-y-2">
-                          <Button
-                            color="primary"
-                            onClick={() => openModal("edit", row.id.toString())}
-                            className="w-full max-w-[140px] text-sm font-light text-white"
-                          >
-                            <FaPenToSquare />
-                            Cập nhật
-                          </Button>
-                          {/* Delete Btn */}
-                          <Button
-                            color="secondary"
-                            onClick={() =>
-                              openModal("delete", row.id.toString())
-                            }
-                            className="w-full max-w-[140px] text-sm font-light text-white"
-                          >
-                            <MdDelete />
-                            Xoá
-                          </Button>
+                    <details>
+                      <summary className="inline cursor-pointer text-base text-warning">
+                        <div className="flex items-center justify-center px-[55px] py-2">
+                          <FaCircleInfo />
                         </div>
-                      </details>
-                      {/* Confirmation Modal */}
-                      <div>
-                        {/* Create */}
-                        <CreateProduct
-                          isOpen={currentModal === "create"}
-                          onClose={closeModal}
-                        />
-                        <EditProduct
-                          isOpen={currentModal === "edit"}
-                          onClose={closeModal}
-                        />
-                        <DeleteProduct
-                          isOpen={currentModal === "delete"}
-                          onClose={closeModal}
-                        />
+                      </summary>
+                      <div className="flex flex-col items-center justify-center space-y-2">
+                        <Button color="primary" className="w-full max-w-[140px] text-sm font-light text-white" onClick={() => handleOpenForm('edit', row)}>
+                          <FaPenToSquare />
+                          Cập nhật
+                        </Button>
+                        <Button color="secondary" className="w-full max-w-[140px] text-sm font-light text-white" onClick={() => handleDelete(row.id)}>
+                          <MdDelete />
+                          Xoá
+                        </Button>
                       </div>
-                    </div>
+                    </details>
                   </span>
                 </Table.Row>
               ))}
             </Table.Body>
           }
         />
+        {showForm && (
+          <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50 z-50">
+            <div ref={formRef} className="relative bg-white p-4 rounded shadow-lg max-w-lg w-full">
+              <h2 className="text-lg font-bold mb-4">
+                {formMode === 'add' ? 'Thêm sản phẩm' : 'Sửa sản phẩm'}
+              </h2>
+              <ProductForm
+                initialValues={selectedProduct || {}}
+                onSubmit={handleSubmit}
+              />
+              <Button color="secondary" onClick={handleCloseForm}>Đóng</Button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

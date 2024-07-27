@@ -1,5 +1,6 @@
 // Product interface
 export interface Products {
+  category: ReactNode;
   id: string;
   id_catalog: number;
   name: string;
@@ -11,6 +12,12 @@ export interface Products {
   views: number;
   description: string;
 }
+// src/types/Products.ts
+export interface ProductsState {
+  products: Products[];
+  loading: boolean;
+  error: string | null;
+}
 
 // Catalog interface
 export interface Catalogs {
@@ -21,6 +28,7 @@ export interface Catalogs {
 }
 
 interface IResponse<T> {
+  [x: string]: any;
   status: number;
   message: string;
   length: number;
@@ -29,3 +37,4 @@ interface IResponse<T> {
 
 export type IProductResponse = IResponse<Products[]>;
 export type IProductDetailResponse = Products;
+export type ICatalogResponse = IResponse<Catalogs[]>;

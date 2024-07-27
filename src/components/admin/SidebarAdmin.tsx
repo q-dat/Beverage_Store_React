@@ -27,7 +27,7 @@ const SidebarAdmin: React.FC<{}> = () => {
   return (
     <div className="h-screen flex-col justify-evenly bg-white  xl:fixed xl:flex xl:w-64 xl:shadow-lg">
       <div className="flex items-center justify-center">
-        <img width={200} src={Logo} alt="Admin" />
+        <img width={150} src={Logo} alt="Admin" />
       </div>
       <div className="h-[300px] overflow-y-scroll scrollbar-hide">
         <Menu className="flex-grow">
