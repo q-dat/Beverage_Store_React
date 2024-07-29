@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getProduct } from "../services/ProductService";
+import { getProductDetail } from "../services/ProductService";
 import { Link, useParams } from "react-router-dom";
 import { Products } from "../types/Products";
 import { useShoppingContext } from "../context/ShoppingContext";
@@ -28,7 +28,7 @@ const ProductsDetail: React.FC = () => {
     const fetchProduct = async () => {
       try {
         if (id) {
-          const fetchedProduct = await getProduct(id);
+          const fetchedProduct = await getProductDetail(id);
           setProduct(fetchedProduct);
         }
       } catch (error) {
