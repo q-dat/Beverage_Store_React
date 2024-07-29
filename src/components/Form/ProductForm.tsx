@@ -6,7 +6,7 @@ import { getCatalogs } from '../../services/ProductService'; // Import hàm từ
 
 // Định nghĩa các trường trong form
 const renderField = ({ input, label, type, meta }: any) => (
-  <div className="form-group mb-4">
+  <div className=" mb-4">
     <label className="block text-gray-700 font-semibold mb-1">{label}</label>
     <Input {...input} type={type} className="input input-bordered w-full" />
     {meta.touched && meta.error && <span className="text-red-500">{meta.error}</span>}
@@ -14,7 +14,7 @@ const renderField = ({ input, label, type, meta }: any) => (
 );
 
 const renderSelect = ({ input, label, options }: any) => (
-  <div className="form-group mb-4">
+  <div className=" mb-4">
     <label className="block text-gray-700 font-semibold mb-1">{label}</label>
     <Select
       {...input}
