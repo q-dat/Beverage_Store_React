@@ -177,14 +177,14 @@ app.get("/catalog/:id", (req, res) => {
   );
 });
 app.post("/catalog", (req, res) => {
-  const { name, description, img } = req.body;
+  const { name, description } = req.body;
   if (!name) {
     return res.status(400).json({ message: "Tên danh mục là bắt buộc" });
   }
 
   const query =
-    "INSERT INTO catalog (`name`, `description`, `img`) VALUES (?, ?, ?)";
-  connection.query(query, [name, description, img], (error, results) => {
+    "INSERT INTO catalog (`name`, `description`) VALUES (?, ?)";
+  connection.query(query, [name, description], (error, results) => {
     if (error) {
       console.error("Lỗi truy vấn: ", error);
       return res.status(500).send({ error: "Lỗi truy vấn" });
@@ -195,7 +195,7 @@ app.post("/catalog", (req, res) => {
 
 app.put("/catalog/:id", (req, res) => {
   const categoryId = req.params.id;
-  const { name, description, img } = req.body;
+  const { name, description } = req.body;
 
   let query = "UPDATE catalog SET ";
   const params = [];
@@ -208,11 +208,6 @@ app.put("/catalog/:id", (req, res) => {
     query += "`description` = ?, ";
     params.push(description);
   }
-  if (img !== undefined) {
-    query += "`img` = ?, ";
-    params.push(img);
-  }
-
   if (params.length === 0) {
     return res.status(400).json({ message: "Không có dữ liệu để cập nhật" });
   }
