@@ -36,19 +36,36 @@ app.get("/products", (req, res) => {
 });
 
 app.post("/products", (req, res) => {
-  const { name, id_catalog, price, sale, status, views, description, img, img_child } = req.body;
+  const {
+    name,
+    id_catalog,
+    price,
+    sale,
+    status,
+    views,
+    description,
+    img,
+    img_child,
+  } = req.body;
   if (!name || !id_catalog || !price) {
-    return res.status(400).json({ message: "Tên sản phẩm, ID danh mục và giá là bắt buộc" });
+    return res
+      .status(400)
+      .json({ message: "Tên sản phẩm, ID danh mục và giá là bắt buộc" });
   }
 
-  const query = "INSERT INTO products (`name`, `id_catalog`, `price`, `sale`, `status`, `views`, `description`, `img`, `img_child`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-  connection.query(query, [name, id_catalog, price, sale, status, views, description, img, img_child], (error, results) => {
-    if (error) {
-      console.error("Lỗi truy vấn: ", error);
-      return res.status(500).send({ error: "Lỗi truy vấn" });
+  const query =
+    "INSERT INTO products (`name`, `id_catalog`, `price`, `sale`, `status`, `views`, `description`, `img`, `img_child`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+  connection.query(
+    query,
+    [name, id_catalog, price, sale, status, views, description, img, img_child],
+    (error, results) => {
+      if (error) {
+        console.error("Lỗi truy vấn: ", error);
+        return res.status(500).send({ error: "Lỗi truy vấn" });
+      }
+      res.status(201).send({ message: "Sản phẩm đã được thêm" });
     }
-    res.status(201).send({ message: "Sản phẩm đã được thêm" });
-  });
+  );
 });
 
 app.get("/products/:id", (req, res) => {
@@ -68,19 +85,45 @@ app.get("/products/:id", (req, res) => {
 
 app.put("/products/:id", (req, res) => {
   const productId = req.params.id;
-  const { name, id_catalog, price, sale, status, views, description, img, img_child } = req.body;
+  const {
+    name,
+    id_catalog,
+    price,
+    sale,
+    status,
+    views,
+    description,
+    img,
+    img_child,
+  } = req.body;
 
-  const query = "UPDATE products SET `name` = ?, `id_catalog` = ?, `price` = ?, `sale` = ?, `status` = ?, `views` = ?, `description` = ?, `img` = ?, `img_child` = ? WHERE `id` = ?";
-  connection.query(query, [name, id_catalog, price, sale, status, views, description, img, img_child, productId], (error, results) => {
-    if (error) {
-      console.error("Lỗi truy vấn: ", error);
-      return res.status(500).send({ error: "Lỗi truy vấn" });
+  const query =
+    "UPDATE products SET `name` = ?, `id_catalog` = ?, `price` = ?, `sale` = ?, `status` = ?, `views` = ?, `description` = ?, `img` = ?, `img_child` = ? WHERE `id` = ?";
+  connection.query(
+    query,
+    [
+      name,
+      id_catalog,
+      price,
+      sale,
+      status,
+      views,
+      description,
+      img,
+      img_child,
+      productId,
+    ],
+    (error, results) => {
+      if (error) {
+        console.error("Lỗi truy vấn: ", error);
+        return res.status(500).send({ error: "Lỗi truy vấn" });
+      }
+      if (results.affectedRows === 0) {
+        return res.status(404).json({ message: "Sản phẩm không tồn tại" });
+      }
+      res.status(200).send({ message: "Sản phẩm đã được cập nhật" });
     }
-    if (results.affectedRows === 0) {
-      return res.status(404).json({ message: "Sản phẩm không tồn tại" });
-    }
-    res.status(200).send({ message: "Sản phẩm đã được cập nhật" });
-  });
+  );
 });
 
 app.delete("/products/:id", (req, res) => {
@@ -119,22 +162,6 @@ app.get("/catalog", (req, res) => {
   );
 });
 
-app.post("/catalog", (req, res) => {
-  const { name, description } = req.body;
-  if (!name) {
-    return res.status(400).json({ message: "Tên danh mục là bắt buộc" });
-  }
-
-  const query = "INSERT INTO catalog (`name`, `description`) VALUES (?, ?)";
-  connection.query(query, [name, description], (error, results) => {
-    if (error) {
-      console.error("Lỗi truy vấn: ", error);
-      return res.status(500).send({ error: "Lỗi truy vấn" });
-    }
-    res.status(201).send({ message: "Danh mục đã được thêm" });
-  });
-});
-
 app.get("/catalog/:id", (req, res) => {
   const categoryId = req.params.id;
   connection.query(
@@ -146,6 +173,77 @@ app.get("/catalog/:id", (req, res) => {
         return res.status(404).json({ message: "Danh mục không tồn tại" });
       }
       res.json(results[0]);
+    }
+  );
+});
+app.post("/catalog", (req, res) => {
+  const { name, description, img } = req.body;
+  if (!name) {
+    return res.status(400).json({ message: "Tên danh mục là bắt buộc" });
+  }
+
+  const query =
+    "INSERT INTO catalog (`name`, `description`, `img`) VALUES (?, ?, ?)";
+  connection.query(query, [name, description, img], (error, results) => {
+    if (error) {
+      console.error("Lỗi truy vấn: ", error);
+      return res.status(500).send({ error: "Lỗi truy vấn" });
+    }
+    res.status(201).send({ message: "Danh mục đã được thêm" });
+  });
+});
+
+app.put("/catalog/:id", (req, res) => {
+  const categoryId = req.params.id;
+  const { name, description, img } = req.body;
+
+  let query = "UPDATE catalog SET ";
+  const params = [];
+
+  if (name !== undefined) {
+    query += "`name` = ?, ";
+    params.push(name);
+  }
+  if (description !== undefined) {
+    query += "`description` = ?, ";
+    params.push(description);
+  }
+  if (img !== undefined) {
+    query += "`img` = ?, ";
+    params.push(img);
+  }
+
+  if (params.length === 0) {
+    return res.status(400).json({ message: "Không có dữ liệu để cập nhật" });
+  }
+
+  query = query.slice(0, -2); // Remove trailing comma and space
+  query += " WHERE `id` = ?";
+  params.push(categoryId);
+
+  connection.query(query, params, (error, results) => {
+    if (error) {
+      console.error("Lỗi truy vấn: ", error);
+      return res.status(500).send({ error: "Lỗi truy vấn" });
+    }
+    if (results.affectedRows === 0) {
+      return res.status(404).json({ message: "Danh mục không tồn tại" });
+    }
+    res.status(200).send({ message: "Danh mục đã được cập nhật" });
+  });
+});
+
+app.delete("/catalog/:id", (req, res) => {
+  const categoryId = req.params.id;
+  connection.query(
+    "DELETE FROM catalog WHERE `id` = ?",
+    [categoryId],
+    (error, results) => {
+      if (error) return res.status(500).json({ error: "Lỗi truy vấn" });
+      if (results.affectedRows === 0) {
+        return res.status(404).json({ message: "Danh mục không tồn tại" });
+      }
+      res.status(200).send({ message: "Danh mục đã được xóa" });
     }
   );
 });
@@ -178,17 +276,24 @@ app.get("/products/search/:name", (req, res) => {
 app.post("/register", (req, res) => {
   const { username, phone, email, address, password, description } = req.body;
   if (!username || !phone || !email || !address || !password) {
-    return res.status(400).send({ message: "Tất cả các trường đều là bắt buộc" });
+    return res
+      .status(400)
+      .send({ message: "Tất cả các trường đều là bắt buộc" });
   }
 
-  const query = "INSERT INTO user (username, phone, email, address, password, description) VALUES (?, ?, ?, ?, ?, ?)";
-  connection.query(query, [username, phone, email, address, password, description], (error, results) => {
-    if (error) {
-      console.error("Lỗi truy vấn: ", error);
-      return res.status(500).send({ error: "Lỗi truy vấn" });
+  const query =
+    "INSERT INTO user (username, phone, email, address, password, description) VALUES (?, ?, ?, ?, ?, ?)";
+  connection.query(
+    query,
+    [username, phone, email, address, password, description],
+    (error, results) => {
+      if (error) {
+        console.error("Lỗi truy vấn: ", error);
+        return res.status(500).send({ error: "Lỗi truy vấn" });
+      }
+      res.status(201).send({ message: "Người dùng đã được đăng ký" });
     }
-    res.status(201).send({ message: "Người dùng đã được đăng ký" });
-  });
+  );
 });
 
 app.post("/login", (req, res) => {
@@ -209,7 +314,14 @@ app.post("/login", (req, res) => {
     }
 
     const user = results[0];
-    const { id, username, phone, email: userEmail, address, description } = user;
+    const {
+      id,
+      username,
+      phone,
+      email: userEmail,
+      address,
+      description,
+    } = user;
 
     res.status(200).json({
       message: "Đăng nhập thành công",
@@ -225,5 +337,7 @@ app.post("/login", (req, res) => {
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
-  console.log(`--------------------------------------------------------------------http://localhost:${port}/products`);
+  console.log(
+    `--------------------------------------------------------------------http://localhost:${port}/products`
+  );
 });

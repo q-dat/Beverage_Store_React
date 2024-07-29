@@ -23,8 +23,8 @@ export interface ProductsState {
 export interface Catalogs {
   id: number;
   name: string;
-  img: string | null;
-  description: string | null;
+  img: string ;
+  description?: string;
 }
 
 interface IResponse<T> {
