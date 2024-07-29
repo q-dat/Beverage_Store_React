@@ -162,18 +162,21 @@ const ListProductsPage: React.FC = () => {
           }
         />
         {showForm && (
-          <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50 z-50">
-            <div ref={formRef} className="relative bg-white p-4 rounded shadow-lg max-w-lg w-full">
-              <h2 className="text-lg font-bold mb-4">
-                {formMode === 'add' ? 'Thêm sản phẩm' : 'Sửa sản phẩm'}
-              </h2>
-              <ProductForm
-                initialValues={selectedProduct || {}}
-                onSubmit={handleSubmit}
-              />
-              <Button color="secondary" onClick={handleCloseForm}>Đóng</Button>
-            </div>
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-70 z-50">
+        <div ref={formRef} className="relative bg-white p-6 rounded-lg shadow-xl max-w-lg w-full mx-4">
+          <h2 className="text-xl font-semibold mb-6 text-gray-800">
+            {formMode === 'add' ? 'Thêm sản phẩm' : 'Sửa sản phẩm'}
+          </h2>
+          <ProductForm
+            initialValues={selectedProduct || {}}
+            onSubmit={handleSubmit}
+          />
+          <div className="mt-4 flex justify-end">
+            <Button color="secondary" className='text-white' onClick={handleCloseForm}>Đóng</Button>
           </div>
+        </div>
+      </div>
+      
         )}
       </div>
     </div>
