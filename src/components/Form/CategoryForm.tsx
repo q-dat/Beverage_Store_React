@@ -15,7 +15,6 @@ const renderField = ({ input, label, type, meta: { touched, error } }: any) => (
 const CategoryForm: React.FC<InjectedFormProps<Catalogs>> = ({ handleSubmit }) => (
   <form onSubmit={handleSubmit}>
     <Field name="name" component={renderField} type="text" label="Tên danh mục" />
-    <Field name="img" component={renderField} type="text" label="Hình ảnh" />
     <Field name="description" component={renderField} type="text" label="Mô tả" />
     <div className="flex justify-end mt-4">
       <Button type="submit" color="primary" className="text-white">Lưu</Button>
