@@ -4,6 +4,50 @@ const cors = require("cors");
 
 const app = express();
 
+const path = require('path');
+// Cấu hình EJS
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views')); // Thay đổi theo thư mục chứa các tệp EJS của bạn
+
+// Danh sách các endpoint
+const endpointsByCategory = {
+  'Products': [
+    { name: 'Get Products', url: '/products', type: 'read' },
+    { name: 'Get Product by ID', url: '/products/{id}', type: 'read' },
+    { name: 'Create Product', url: '/products', type: 'create' },
+    { name: 'Update Product', url: '/products/{id}', type: 'update' },
+    { name: 'Delete Product', url: '/products/{id}', type: 'delete' },
+    { name: 'Get Products by Catalog', url: '/products/catalog/:id_catalog', type: 'read' },
+    { name: 'Search Products by Name', url: '/products/search/:name', type: 'read' },
+    { name: 'Get Products on Sale', url: '/sale', type: 'read' }
+  ],
+  'Catalogs': [
+    { name: 'Get Catalogs', url: '/catalog', type: 'read' },
+    { name: 'Get Catalog by ID', url: '/catalog/{id}', type: 'read' },
+    { name: 'Create Catalog', url: '/catalog', type: 'create' },
+    { name: 'Update Catalog', url: '/catalog/{id}', type: 'update' },
+    { name: 'Delete Catalog', url: '/catalog/{id}', type: 'delete' }
+  ],
+  'Orders': [
+    { name: 'Create Order', url: '/orders', type: 'create' },
+    { name: 'Get Orders', url: '/orders', type: 'read' },
+    { name: 'Get Order by ID', url: '/orders/{id}', type: 'read' },
+    { name: 'Update Order', url: '/orders/{id}', type: 'update' },
+    { name: 'Delete Order', url: '/orders/{id}', type: 'delete' }
+  ],
+  'Order Details': [
+    { name: 'Create Order Detail', url: '/order-detail', type: 'create' },
+    { name: 'Get Order Details', url: '/order-detail', type: 'read' },
+    { name: 'Get Order Detail by ID', url: '/order-detail/{id}', type: 'read' },
+    { name: 'Update Order Detail', url: '/order-detail/{id}', type: 'update' },
+    { name: 'Delete Order Detail', url: '/order-detail/{id}', type: 'delete' }
+  ]
+};
+app.get('/', (req, res) => {
+  res.render('index', { endpointsByCategory });
+});
+
+
 app.use(
   cors({
     origin: "http://localhost:5173",
@@ -357,7 +401,7 @@ app.post("/login", (req, res) => {
     });
   });
 });
-//Đơn hàng
+// Đơn hàng
 app.post("/orders", (req, res) => {
   const { createAt, status, total, user_id, payment_id } = req.body;
   if (!createAt || !status || !total || !user_id || !payment_id) {
@@ -380,7 +424,7 @@ app.post("/orders", (req, res) => {
     }
   );
 });
-// Get all orders
+
 app.get("/orders", (req, res) => {
   connection.query(
     "SELECT `id`, `createAt`, `status`, `total`, `user_id`, `payment_id` FROM `orders`",
@@ -391,7 +435,6 @@ app.get("/orders", (req, res) => {
   );
 });
 
-// Get an order by ID
 app.get("/orders/:id", (req, res) => {
   const orderId = req.params.id;
   connection.query(
@@ -406,6 +449,7 @@ app.get("/orders/:id", (req, res) => {
     }
   );
 });
+
 app.put("/orders/:id", (req, res) => {
   const orderId = req.params.id;
   const { createAt, status, total, user_id, payment_id } = req.body;
@@ -452,6 +496,7 @@ app.put("/orders/:id", (req, res) => {
     res.status(200).send({ message: "Đơn hàng đã được cập nhật" });
   });
 });
+
 app.delete("/orders/:id", (req, res) => {
   const orderId = req.params.id;
   connection.query(
@@ -467,9 +512,150 @@ app.delete("/orders/:id", (req, res) => {
   );
 });
 
+// Chi tiết đơn hàng
+app.post("/order-detail", (req, res) => {
+  const { order_id, product_id, price, quantity, total } = req.body;
+  if (!order_id || !product_id || !price || !quantity || !total) {
+    return res
+      .status(400)
+      .json({ message: "Tất cả các trường đều là bắt buộc" });
+  }
+
+  const query =
+    "INSERT INTO `order_detail` (`order_id`, `product_id`, `price`, `quantity`, `total`) VALUES (?, ?, ?, ?, ?)";
+  connection.query(
+    query,
+    [order_id, product_id, price, quantity, total],
+    (error, results) => {
+      if (error) {
+        console.error("Lỗi truy vấn: ", error);
+        return res.status(500).send({ error: "Lỗi truy vấn" });
+      }
+      res.status(201).send({ message: "Chi tiết đơn hàng đã được thêm" });
+    }
+  );
+});
+
+app.get("/order-detail", (req, res) => {
+  connection.query(
+    "SELECT `id`, `order_id`, `product_id`, `price`, `quantity`, `total` FROM `order_detail`",
+    (error, results) => {
+      if (error) return res.status(500).json({ error: "Lỗi truy vấn" });
+      res.json(results);
+    }
+  );
+});
+
+app.get("/order-detail/:id", (req, res) => {
+  const detailId = req.params.id;
+  connection.query(
+    "SELECT `id`, `order_id`, `product_id`, `price`, `quantity`, `total` FROM `order_detail` WHERE `id` = ?",
+    [detailId],
+    (error, results) => {
+      if (error) return res.status(500).json({ error: "Lỗi truy vấn" });
+      if (results.length === 0) {
+        return res.status(404).json({ message: "Chi tiết đơn hàng không tồn tại" });
+      }
+      res.json(results[0]);
+    }
+  );
+});
+
+app.put("/order-detail/:id", (req, res) => {
+  const detailId = req.params.id;
+  const { order_id, product_id, price, quantity, total } = req.body;
+
+  let query = "UPDATE `order_detail` SET ";
+  const params = [];
+
+  if (order_id !== undefined) {
+    query += "`order_id` = ?, ";
+    params.push(order_id);
+  }
+  if (product_id !== undefined) {
+    query += "`product_id` = ?, ";
+    params.push(product_id);
+  }
+  if (price !== undefined) {
+    query += "`price` = ?, ";
+    params.push(price);
+  }
+  if (quantity !== undefined) {
+    query += "`quantity` = ?, ";
+    params.push(quantity);
+  }
+  if (total !== undefined) {
+    query += "`total` = ?, ";
+    params.push(total);
+  }
+  if (params.length === 0) {
+    return res.status(400).json({ message: "Không có dữ liệu để cập nhật" });
+  }
+
+  query = query.slice(0, -2);
+  query += " WHERE `id` = ?";
+  params.push(detailId);
+
+  connection.query(query, params, (error, results) => {
+    if (error) {
+      console.error("Lỗi truy vấn: ", error);
+      return res.status(500).send({ error: "Lỗi truy vấn" });
+    }
+    if (results.affectedRows === 0) {
+      return res.status(404).json({ message: "Chi tiết đơn hàng không tồn tại" });
+    }
+    res.status(200).send({ message: "Chi tiết đơn hàng đã được cập nhật" });
+  });
+});
+
+app.delete("/order-detail/:id", (req, res) => {
+  const detailId = req.params.id;
+  connection.query(
+    "DELETE FROM `order_detail` WHERE `id` = ?",
+    [detailId],
+    (error, results) => {
+      if (error) return res.status(500).json({ error: "Lỗi truy vấn" });
+      if (results.affectedRows === 0) {
+        return res.status(404).json({ message: "Chi tiết đơn hàng không tồn tại" });
+      }
+      res.status(200).send({ message: "Chi tiết đơn hàng đã được xóa" });
+    }
+  );
+});
+
+
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
-  console.log(
-    `--------------------------------------------------------------------http://localhost:${port}/products`
-  );
+  // Products
+console.log(`--------------------------------------------------------------------GET http://localhost:${port}/products`); // Read all products
+console.log(`--------------------------------------------------------------------GET http://localhost:${port}/products/:id`); // Read product by ID
+console.log(`--------------------------------------------------------------------POST http://localhost:${port}/products`); // Create new product
+console.log(`--------------------------------------------------------------------PUT http://localhost:${port}/products/:id`); // Update product by ID
+console.log(`--------------------------------------------------------------------DELETE http://localhost:${port}/products/:id`); // Delete product by ID
+
+console.log(`--------------------------------------------------------------------GET http://localhost:${port}/products/catalog/:id_catalog`); // Read products by catalog
+console.log(`--------------------------------------------------------------------GET http://localhost:${port}/products/search/:name`); // Search products by name
+console.log(`--------------------------------------------------------------------GET http://localhost:${port}/sale`); // Read products on sale
+
+// Catalogs
+console.log(`--------------------------------------------------------------------GET http://localhost:${port}/catalog`); // Read all catalogs
+console.log(`--------------------------------------------------------------------GET http://localhost:${port}/catalog/:id`); // Read catalog by ID
+console.log(`--------------------------------------------------------------------POST http://localhost:${port}/catalog`); // Create new catalog
+console.log(`--------------------------------------------------------------------PUT http://localhost:${port}/catalog/:id`); // Update catalog by ID
+console.log(`--------------------------------------------------------------------DELETE http://localhost:${port}/catalog/:id`); // Delete catalog by ID
+
+// Orders
+console.log(`--------------------------------------------------------------------POST http://localhost:${port}/orders`); // Create new order
+console.log(`--------------------------------------------------------------------GET http://localhost:${port}/orders`); // Read all orders
+console.log(`--------------------------------------------------------------------GET http://localhost:${port}/orders/:id`); // Read order by ID
+console.log(`--------------------------------------------------------------------PUT http://localhost:${port}/orders/:id`); // Update order by ID
+console.log(`--------------------------------------------------------------------DELETE http://localhost:${port}/orders/:id`); // Delete order by ID
+
+// Order Details
+console.log(`--------------------------------------------------------------------POST http://localhost:${port}/order_detail`); // Create new order detail
+console.log(`--------------------------------------------------------------------GET http://localhost:${port}/order_detail`); // Read all order details
+console.log(`--------------------------------------------------------------------GET http://localhost:${port}/order_detail/:id`); // Read order detail by ID
+console.log(`--------------------------------------------------------------------PUT http://localhost:${port}/order_detail/:id`); // Update order detail by ID
+console.log(`--------------------------------------------------------------------DELETE http://localhost:${port}/order_detail/:id`); // Delete order detail by ID
+
 });

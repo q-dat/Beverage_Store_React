@@ -1,4 +1,6 @@
-// Product interface
+import { ReactNode } from 'react';
+
+// Các loại đã có
 export interface Products {
   category: ReactNode;
   id: string;
@@ -12,19 +14,37 @@ export interface Products {
   views: number;
   description: string;
 }
-// src/types/Products.ts
+
 export interface ProductsState {
   products: Products[];
   loading: boolean;
   error: string | null;
 }
 
-// Catalog interface
 export interface Catalogs {
   id: number;
   name: string;
-  img: string ;
+  img: string;
   description?: string;
+}
+
+// Các loại cho đơn hàng
+export interface Orders {
+  id: number;
+  createAt: string; // Ngày dưới dạng chuỗi ISO
+  status: string; // Ví dụ: 'pending', 'completed', 'shipped'
+  total: number;
+  user_id: number;
+  payment_id: number;
+}
+
+export interface OrderDetail {
+  id: number;
+  order_id: number;
+  product_id: string;
+  price: number;
+  quantity: number;
+  total: number;
 }
 
 interface IResponse<T> {
@@ -34,6 +54,10 @@ interface IResponse<T> {
   length: number;
   data: T;
 }
+
+// Các loại phản hồi cho đơn hàng
+export type IOrderResponse = IResponse<Orders[]>;
+export type IOrderDetailResponse = IResponse<OrderDetail[]>;
 
 export type IProductResponse = IResponse<Products[]>;
 export type IProductDetailResponse = Products;
