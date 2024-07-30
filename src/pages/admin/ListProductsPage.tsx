@@ -136,7 +136,7 @@ const ListProductsPage: React.FC = () => {
                   </span>
                   <span className="line-clamp-1">{row.name}</span>
                   <span className="line-clamp-1">{categories[row.id_catalog]}</span>
-                  <span className="line-clamp-1">{row.price}</span>
+                  <span className="line-clamp-1">{row.price}.000đ</span>
                   <span>
                     <details>
                       <summary className="inline cursor-pointer text-base text-warning">

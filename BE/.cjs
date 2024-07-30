@@ -82,7 +82,6 @@ app.get("/products/:id", (req, res) => {
     }
   );
 });
-
 app.put("/products/:id", (req, res) => {
   const productId = req.params.id;
   const {
@@ -97,33 +96,63 @@ app.put("/products/:id", (req, res) => {
     img_child,
   } = req.body;
 
-  const query =
-    "UPDATE products SET `name` = ?, `id_catalog` = ?, `price` = ?, `sale` = ?, `status` = ?, `views` = ?, `description` = ?, `img` = ?, `img_child` = ? WHERE `id` = ?";
-  connection.query(
-    query,
-    [
-      name,
-      id_catalog,
-      price,
-      sale,
-      status,
-      views,
-      description,
-      img,
-      img_child,
-      productId,
-    ],
-    (error, results) => {
-      if (error) {
-        console.error("Lỗi truy vấn: ", error);
-        return res.status(500).send({ error: "Lỗi truy vấn" });
-      }
-      if (results.affectedRows === 0) {
-        return res.status(404).json({ message: "Sản phẩm không tồn tại" });
-      }
-      res.status(200).send({ message: "Sản phẩm đã được cập nhật" });
+  let query = "UPDATE products SET ";
+  const params = [];
+  if (name !== undefined) {
+    query += "`name` = ?, ";
+    params.push(name);
+  }
+  if (id_catalog !== undefined) {
+    query += "`id_catalog` = ?, ";
+    params.push(id_catalog);
+  }
+  if (price !== undefined) {
+    query += "`price` = ?, ";
+    params.push(price);
+  }
+  if (sale !== undefined) {
+    query += "`sale` = ?, ";
+    params.push(sale);
+  }
+  if (status !== undefined) {
+    query += "`status` = ?, ";
+    params.push(status);
+  }
+  if (views !== undefined) {
+    query += "`views` = ?, ";
+    params.push(views);
+  }
+  if (description !== undefined) {
+    query += "`description` = ?, ";
+    params.push(description);
+  }
+  if (img !== undefined) {
+    query += "`img` = ?, ";
+    params.push(img);
+  }
+  if (img_child !== undefined) {
+    query += "`img_child` = ?, ";
+    params.push(img_child);
+  }
+
+  if (params.length === 0) {
+    return res.status(400).json({ message: "Không có dữ liệu để cập nhật" });
+  }
+
+  query = query.slice(0, -2);
+  query += " WHERE `id` = ?";
+  params.push(productId);
+
+  connection.query(query, params, (error, results) => {
+    if (error) {
+      console.error("Lỗi truy vấn: ", error);
+      return res.status(500).send({ error: "Lỗi truy vấn" });
     }
-  );
+    if (results.affectedRows === 0) {
+      return res.status(404).json({ message: "Sản phẩm không tồn tại" });
+    }
+    res.status(200).send({ message: "Sản phẩm đã được cập nhật" });
+  });
 });
 
 app.delete("/products/:id", (req, res) => {
@@ -182,8 +211,7 @@ app.post("/catalog", (req, res) => {
     return res.status(400).json({ message: "Tên danh mục là bắt buộc" });
   }
 
-  const query =
-    "INSERT INTO catalog (`name`, `description`) VALUES (?, ?)";
+  const query = "INSERT INTO catalog (`name`, `description`) VALUES (?, ?)";
   connection.query(query, [name, description], (error, results) => {
     if (error) {
       console.error("Lỗi truy vấn: ", error);
@@ -212,7 +240,7 @@ app.put("/catalog/:id", (req, res) => {
     return res.status(400).json({ message: "Không có dữ liệu để cập nhật" });
   }
 
-  query = query.slice(0, -2); // Remove trailing comma and space
+  query = query.slice(0, -2);
   query += " WHERE `id` = ?";
   params.push(categoryId);
 
@@ -292,7 +320,7 @@ app.post("/register", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-  const { email, password } = req.body || {}; // Thêm fallback giá trị {}
+  const { email, password } = req.body || {};
   console.log("Received login request:", req.body);
   if (!email || !password) {
     return res.status(400).json({ message: "Email và mật khẩu là bắt buộc" });
@@ -328,6 +356,115 @@ app.post("/login", (req, res) => {
       description: description,
     });
   });
+});
+//Đơn hàng
+app.post("/orders", (req, res) => {
+  const { createAt, status, total, user_id, payment_id } = req.body;
+  if (!createAt || !status || !total || !user_id || !payment_id) {
+    return res
+      .status(400)
+      .json({ message: "Tất cả các trường đều là bắt buộc" });
+  }
+
+  const query =
+    "INSERT INTO `orders` (`createAt`, `status`, `total`, `user_id`, `payment_id`) VALUES (?, ?, ?, ?, ?)";
+  connection.query(
+    query,
+    [createAt, status, total, user_id, payment_id],
+    (error, results) => {
+      if (error) {
+        console.error("Lỗi truy vấn: ", error);
+        return res.status(500).send({ error: "Lỗi truy vấn" });
+      }
+      res.status(201).send({ message: "Đơn hàng đã được thêm" });
+    }
+  );
+});
+// Get all orders
+app.get("/orders", (req, res) => {
+  connection.query(
+    "SELECT `id`, `createAt`, `status`, `total`, `user_id`, `payment_id` FROM `orders`",
+    (error, results) => {
+      if (error) return res.status(500).json({ error: "Lỗi truy vấn" });
+      res.json(results);
+    }
+  );
+});
+
+// Get an order by ID
+app.get("/orders/:id", (req, res) => {
+  const orderId = req.params.id;
+  connection.query(
+    "SELECT `id`, `createAt`, `status`, `total`, `user_id`, `payment_id` FROM `orders` WHERE `id` = ?",
+    [orderId],
+    (error, results) => {
+      if (error) return res.status(500).json({ error: "Lỗi truy vấn" });
+      if (results.length === 0) {
+        return res.status(404).json({ message: "Đơn hàng không tồn tại" });
+      }
+      res.json(results[0]);
+    }
+  );
+});
+app.put("/orders/:id", (req, res) => {
+  const orderId = req.params.id;
+  const { createAt, status, total, user_id, payment_id } = req.body;
+
+  let query = "UPDATE `orders` SET ";
+  const params = [];
+
+  if (createAt !== undefined) {
+    query += "`createAt` = ?, ";
+    params.push(createAt);
+  }
+  if (status !== undefined) {
+    query += "`status` = ?, ";
+    params.push(status);
+  }
+  if (total !== undefined) {
+    query += "`total` = ?, ";
+    params.push(total);
+  }
+  if (user_id !== undefined) {
+    query += "`user_id` = ?, ";
+    params.push(user_id);
+  }
+  if (payment_id !== undefined) {
+    query += "`payment_id` = ?, ";
+    params.push(payment_id);
+  }
+  if (params.length === 0) {
+    return res.status(400).json({ message: "Không có dữ liệu để cập nhật" });
+  }
+
+  query = query.slice(0, -2);
+  query += " WHERE `id` = ?";
+  params.push(orderId);
+
+  connection.query(query, params, (error, results) => {
+    if (error) {
+      console.error("Lỗi truy vấn: ", error);
+      return res.status(500).send({ error: "Lỗi truy vấn" });
+    }
+    if (results.affectedRows === 0) {
+      return res.status(404).json({ message: "Đơn hàng không tồn tại" });
+    }
+    res.status(200).send({ message: "Đơn hàng đã được cập nhật" });
+  });
+});
+app.delete("/orders/:id", (req, res) => {
+  const orderId = req.params.id;
+  connection.query(
+    "DELETE FROM `orders` WHERE `id` = ?",
+    [orderId],
+    (error, results) => {
+      if (error) return res.status(500).json({ error: "Lỗi truy vấn" });
+      if (results.affectedRows === 0) {
+        return res.status(404).json({ message: "Đơn hàng không tồn tại" });
+      }
+      res.status(200).send({ message: "Đơn hàng đã được xóa" });
+    }
+  );
 });
 
 const port = process.env.PORT || 3000;
