@@ -13,7 +13,7 @@ const Home: React.FC = () => {
   // Thêm Sản Phẩm Vào Giỏ Hàng
   const handleAddToCart = (product: Products) => {
     const cartItem: CartItem = {
-      id: product.id.toString(), // Chuyển đổi số thành chuỗi
+      id: product.id.toString(), 
       name: product.name,
       price: product.price,
       img: product.img,
