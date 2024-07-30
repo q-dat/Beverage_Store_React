@@ -340,6 +340,20 @@ app.get("/products/search/:name", (req, res) => {
 });
 
 // Auth
+app.get("/user/:id", (req, res) => {
+  const userId = req.params.id;
+  connection.query(
+    "SELECT `id`, `username`, `phone`, `email`, `address`, `password`, `description` FROM `user` WHERE `id` = ?",
+    [userId],
+    (error, results) => {
+      if (error) return res.status(500).json({ error: "Lỗi truy vấn" });
+      if (results.length === 0) {
+        return res.status(404).json({ message: "Người dùng không tồn tại" });
+      }
+      res.json(results[0]);
+    }
+  );
+});
 app.post("/register", (req, res) => {
   const { username, phone, email, address, password, description } = req.body;
   if (!username || !phone || !email || !address || !password) {
@@ -401,6 +415,7 @@ app.post("/login", (req, res) => {
     });
   });
 });
+
 // Đơn hàng
 app.post("/orders", (req, res) => {
   const { createAt, status, total, user_id, payment_id } = req.body;
@@ -424,16 +439,23 @@ app.post("/orders", (req, res) => {
     }
   );
 });
-
+// Lấy đơn hàng của người dùng
 app.get("/orders", (req, res) => {
-  connection.query(
-    "SELECT `id`, `createAt`, `status`, `total`, `user_id`, `payment_id` FROM `orders`",
-    (error, results) => {
-      if (error) return res.status(500).json({ error: "Lỗi truy vấn" });
-      res.json(results);
-    }
-  );
+  const userId = req.query.user_id; // Lấy user_id từ query params
+  let query = "SELECT `id`, `createAt`, `status`, `total`, `user_id`, `payment_id` FROM `orders`";
+  const params = [];
+
+  if (userId) {
+    query += " WHERE `user_id` = ?";
+    params.push(userId);
+  }
+
+  connection.query(query, params, (error, results) => {
+    if (error) return res.status(500).json({ error: "Lỗi truy vấn" });
+    res.json(results);
+  });
 });
+
 
 app.get("/orders/:id", (req, res) => {
   const orderId = req.params.id;
@@ -535,12 +557,14 @@ app.post("/order-detail", (req, res) => {
     }
   );
 });
-
 app.get("/order-detail", (req, res) => {
   connection.query(
     "SELECT `id`, `order_id`, `product_id`, `price`, `quantity`, `total` FROM `order_detail`",
     (error, results) => {
-      if (error) return res.status(500).json({ error: "Lỗi truy vấn" });
+      if (error) {
+        console.error("Lỗi truy vấn: ", error);
+        return res.status(500).json({ error: "Lỗi truy vấn" });
+      }
       res.json(results);
     }
   );
@@ -627,35 +651,6 @@ app.delete("/order-detail/:id", (req, res) => {
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
   // Products
-console.log(`--------------------------------------------------------------------GET http://localhost:${port}/products`); // Read all products
-console.log(`--------------------------------------------------------------------GET http://localhost:${port}/products/:id`); // Read product by ID
-console.log(`--------------------------------------------------------------------POST http://localhost:${port}/products`); // Create new product
-console.log(`--------------------------------------------------------------------PUT http://localhost:${port}/products/:id`); // Update product by ID
-console.log(`--------------------------------------------------------------------DELETE http://localhost:${port}/products/:id`); // Delete product by ID
-
-console.log(`--------------------------------------------------------------------GET http://localhost:${port}/products/catalog/:id_catalog`); // Read products by catalog
-console.log(`--------------------------------------------------------------------GET http://localhost:${port}/products/search/:name`); // Search products by name
-console.log(`--------------------------------------------------------------------GET http://localhost:${port}/sale`); // Read products on sale
-
-// Catalogs
-console.log(`--------------------------------------------------------------------GET http://localhost:${port}/catalog`); // Read all catalogs
-console.log(`--------------------------------------------------------------------GET http://localhost:${port}/catalog/:id`); // Read catalog by ID
-console.log(`--------------------------------------------------------------------POST http://localhost:${port}/catalog`); // Create new catalog
-console.log(`--------------------------------------------------------------------PUT http://localhost:${port}/catalog/:id`); // Update catalog by ID
-console.log(`--------------------------------------------------------------------DELETE http://localhost:${port}/catalog/:id`); // Delete catalog by ID
-
-// Orders
-console.log(`--------------------------------------------------------------------POST http://localhost:${port}/orders`); // Create new order
-console.log(`--------------------------------------------------------------------GET http://localhost:${port}/orders`); // Read all orders
-console.log(`--------------------------------------------------------------------GET http://localhost:${port}/orders/:id`); // Read order by ID
-console.log(`--------------------------------------------------------------------PUT http://localhost:${port}/orders/:id`); // Update order by ID
-console.log(`--------------------------------------------------------------------DELETE http://localhost:${port}/orders/:id`); // Delete order by ID
-
-// Order Details
-console.log(`--------------------------------------------------------------------POST http://localhost:${port}/order_detail`); // Create new order detail
-console.log(`--------------------------------------------------------------------GET http://localhost:${port}/order_detail`); // Read all order details
-console.log(`--------------------------------------------------------------------GET http://localhost:${port}/order_detail/:id`); // Read order detail by ID
-console.log(`--------------------------------------------------------------------PUT http://localhost:${port}/order_detail/:id`); // Update order detail by ID
-console.log(`--------------------------------------------------------------------DELETE http://localhost:${port}/order_detail/:id`); // Delete order detail by ID
+console.log(`--------------------------------------------------------------------GET http://localhost:${port}`);
 
 });

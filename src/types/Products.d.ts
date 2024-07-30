@@ -28,11 +28,10 @@ export interface Catalogs {
   description?: string;
 }
 
-// Các loại cho đơn hàng
 export interface Orders {
   id: number;
-  createAt: string; // Ngày dưới dạng chuỗi ISO
-  status: string; // Ví dụ: 'pending', 'completed', 'shipped'
+  createAt: string;
+  status: string;
   total: number;
   user_id: number;
   payment_id: number;
@@ -40,12 +39,14 @@ export interface Orders {
 
 export interface OrderDetail {
   id: number;
-  order_id: number;
+  order_id: number; 
   product_id: string;
   price: number;
   quantity: number;
   total: number;
 }
+
+
 
 interface IResponse<T> {
   [x: string]: any;

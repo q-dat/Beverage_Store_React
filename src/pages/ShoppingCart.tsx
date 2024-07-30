@@ -8,13 +8,18 @@ import { FaCirclePlus, FaPaypal, FaRegTrashCan } from "react-icons/fa6";
 import { FaMinusCircle } from "react-icons/fa";
 
 const ShoppingCart: React.FC = () => {
-  const { cartItems, increaseQty, decreaseQty, removeCartItem, clearCart } =
-    useShoppingContext();
-  //Chuyển trang
-  const navigate = useNavigate();
+  const { cartItems, increaseQty, decreaseQty, removeCartItem, clearCart } = useShoppingContext();
+  const navigate = useNavigate(); // Initialize useNavigate
+
   // Hàm tính tổng tiền
   const getTotalPrice = (): number =>
     cartItems.reduce((total, item) => total + item.price * item.qty, 0);
+
+  // Hàm xử lý thanh toán
+  const handleCheckout = () => {
+    // Navigate đến trang tạo đơn hàng
+    navigate("/order");
+  };
 
   return (
     <>
@@ -94,7 +99,10 @@ const ShoppingCart: React.FC = () => {
                 Tổng Tiền: {getTotalPrice()}.000đ
               </p>
               <div className="flex flex-col gap-2">
-                <Button className="bg-primary text-white">
+                <Button
+                  onClick={handleCheckout} // Use handleCheckout for navigation
+                  className="bg-primary text-white"
+                >
                   <FaPaypal /> Thanh toán
                 </Button>
                 <Button

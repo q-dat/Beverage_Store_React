@@ -5,4 +5,10 @@ export interface LoginResponse {
     role: number;
     cartItems?: any[];
   }
-  
+export interface User {
+  id: number;
+  username: string;
+  email: string;
+  phone: string;
+  address: string;
+}

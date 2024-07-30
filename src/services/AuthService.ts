@@ -1,11 +1,9 @@
-import { LoginResponse } from "../types/Auth";
+import { LoginResponse, User } from "../types/Auth";
 
 const API_URL = "http://localhost:3000";
 
-export const login = async (
-  email: string,
-  password: string
-): Promise<LoginResponse> => {
+// Function to log in and get user information
+export const login = async (email: string, password: string): Promise<LoginResponse> => {
   const response = await fetch(`${API_URL}/login`, {
     method: "POST",
     headers: {
@@ -21,6 +19,19 @@ export const login = async (
   const data: LoginResponse = await response.json();
   return data;
 };
+
+// Function to fetch user details based on user ID
+export const fetchUser = async (userId: number): Promise<User> => {
+  const response = await fetch(`${API_URL}/users/${userId}`);
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch user details");
+  }
+
+  const user: User = await response.json();
+  return user;
+};
+
 
 export const register = async (
   username: string,

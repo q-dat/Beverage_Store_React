@@ -12,6 +12,7 @@ import Admin from "../pages/admin/Admin";
 import DashboardPage from "../pages/admin/DashboardPage";
 import ListProductsPage from "../pages/admin/ListProductsPage";
 import CategoryPage from "../pages/admin/CategoryPage";
+import OrderPage from "../pages/OrderPage";
 
 export default function AppRouter() {
   return (
@@ -25,6 +26,7 @@ export default function AppRouter() {
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
         <Route path="shopping-cart" element={<ShoppingCart />} />
+        <Route path="order" element={<OrderPage />} />
       </Route>
       <Route path="/" element={<Admin />}>
         <Route index path="admin" element={<DashboardPage />} />
