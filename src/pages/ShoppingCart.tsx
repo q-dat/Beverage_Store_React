@@ -103,7 +103,7 @@ const ShoppingCart: React.FC = () => {
                   onClick={handleCheckout} // Use handleCheckout for navigation
                   className="bg-primary text-white"
                 >
-                  <FaPaypal /> Thanh toán
+                  <FaPaypal /> Đơn Hàng
                 </Button>
                 <Button
                   onClick={clearCart}

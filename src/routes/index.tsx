@@ -13,6 +13,7 @@ import DashboardPage from "../pages/admin/DashboardPage";
 import ListProductsPage from "../pages/admin/ListProductsPage";
 import CategoryPage from "../pages/admin/CategoryPage";
 import OrderPage from "../pages/OrderPage";
+import OrderManager from "../pages/admin/OrderManager";
 
 export default function AppRouter() {
   return (
@@ -32,6 +33,7 @@ export default function AppRouter() {
         <Route index path="admin" element={<DashboardPage />} />
         <Route path="list-products" element={<ListProductsPage />} />
         <Route path="category" element={<CategoryPage />} />
+        <Route path="order-manager" element={<OrderManager />} />
 
       </Route>
     </Routes>

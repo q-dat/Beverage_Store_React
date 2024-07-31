@@ -3,7 +3,7 @@ import { Button, Menu } from "react-daisyui";
 import { FaHome } from "react-icons/fa";
 import { NavLink, useLocation } from "react-router-dom";
 import { Logo } from "../../assets";
-import { FaList } from "react-icons/fa6";
+import { FaFirstOrder, FaList } from "react-icons/fa6";
 import { BiSolidCategory } from "react-icons/bi";
 
 const SidebarAdmin: React.FC<{}> = () => {
@@ -14,6 +14,7 @@ const SidebarAdmin: React.FC<{}> = () => {
     { name: "Dashboard", icon: FaHome, link: "/admin" },
     { name: "Danh sách sản phẩm", icon: FaList, link: "/list-products" },
     { name: "Danh mục", icon: BiSolidCategory, link: "/category" },
+    { name: "Quản lý đơn hàng", icon: FaFirstOrder, link: "/order-manager" },
   ];
 
   useEffect(() => {

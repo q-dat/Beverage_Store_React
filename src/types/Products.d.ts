@@ -44,6 +44,7 @@ export interface OrderDetail {
   price: number;
   quantity: number;
   total: number;
+  status: number;
 }
 
 

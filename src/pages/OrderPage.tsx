@@ -4,20 +4,22 @@ import { useShoppingContext } from "../context/ShoppingContext";
 import { Button } from "react-daisyui";
 import { FaPaypal } from "react-icons/fa";
 import { CartItem } from "../types/CartItem";
-import {
-  createOrder,
-  createOrderDetails,
-  fetchUserById,
-} from "../services/OrderService";
+import { upsertOrder, createOrderDetails, fetchUserById } from "../services/OrderService";
 import { OrderDetail } from "../types/Products";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-// Định nghĩa mã trạng thái đơn hàng
+// Define order status codes and labels
 const statusCodes = {
   PENDING: 1,
   COMPLETED: 2,
   CANCELLED: 3,
+};
+
+const statusLabels = {
+  [statusCodes.PENDING]: "Đang chờ",
+  [statusCodes.COMPLETED]: "Hoàn thành",
+  [statusCodes.CANCELLED]: "Đã hủy",
 };
 
 const OrderPage: React.FC = () => {
@@ -38,70 +40,71 @@ const OrderPage: React.FC = () => {
       return;
     }
 
-    // Get user info from local storage
-    const userInfoString = localStorage.getItem("user");
-    if (userInfoString) {
-      try {
-        const parsedUser = JSON.parse(userInfoString);
-        const userId = parsedUser.id;
+    const fetchUserInfo = async () => {
+      const userInfoString = localStorage.getItem("user");
+      if (userInfoString) {
+        try {
+          const parsedUser = JSON.parse(userInfoString);
+          const userId = parsedUser.id;
 
-        // Fetch user details from the API
-        fetchUserById(userId)
-          .then((user) => {
-            setUserInfo({
-              id: user.id,
-              username: user.username,
-              phone: user.phone,
-              email: user.email,
-              address: user.address,
-            });
-          })
-          .catch((error) => {
-            console.error("Lỗi lấy thông tin người dùng:", error);
-            toast.error("Lỗi lấy thông tin người dùng.");
-            navigate("/login");
+          const user = await fetchUserById(userId);
+          setUserInfo({
+            id: user.id,
+            username: user.username,
+            phone: user.phone,
+            email: user.email,
+            address: user.address,
           });
-      } catch (error) {
-        console.error("Lỗi phân tích thông tin người dùng:", error);
-        toast.error("Lỗi phân tích thông tin người dùng.");
+        } catch (error) {
+          console.error("Lỗi lấy thông tin người dùng:", error);
+          toast.error("Lỗi lấy thông tin người dùng.");
+          navigate("/login");
+        }
+      } else {
         navigate("/login");
       }
-    } else {
-      navigate("/login");
-    }
+    };
+
+    fetchUserInfo();
   }, [cartItems, navigate]);
 
   const handleCreateOrder = async () => {
+    if (!userInfo) {
+      toast.error("Chưa có thông tin người dùng.");
+      return;
+    }
+  
     if (cartItems.length === 0) {
       toast.error("Giỏ hàng trống, không thể tạo đơn hàng.");
       return;
     }
-
+  
     const orderDetails: OrderDetail[] = cartItems.map((item: CartItem) => ({
       id: 0,
-      order_id: 0,
+      order_id: 0,  // sẽ được cập nhật sau khi tạo đơn hàng
       product_id: item.id,
       price: item.price,
       quantity: item.qty,
       total: item.price * item.qty,
+      status: statusCodes.PENDING,
     }));
-
+  
     try {
-      const orderId = await createOrder({
-        createAt: new Date().toISOString().replace("T", " ").substring(0, 19), // Định dạng 'YYYY-MM-DD HH:MM:SS'
+      const orderId = await upsertOrder({
+        createAt: new Date().toISOString().replace("T", " ").substring(0, 19), // Format 'YYYY-MM-DD HH:MM:SS'
         status: statusCodes.PENDING,
         total: totalPrice,
-        user_id: userInfo ? userInfo.id : 1,
-        payment_id: 1,
+        user_id: userInfo.id,
+        payment_id: 1, 
       });
-
+  
       const updatedOrderDetails = orderDetails.map((detail) => ({
         ...detail,
         order_id: orderId,
       }));
-
-      await createOrderDetails(updatedOrderDetails);
-
+  
+      await createOrderDetails(orderId, updatedOrderDetails);
+  
       clearCart();
       setOrderStatus("Đơn hàng đã được tạo thành công!");
       toast.success("Đơn hàng đã được tạo thành công!");
@@ -111,10 +114,11 @@ const OrderPage: React.FC = () => {
       toast.error("Đã xảy ra lỗi khi tạo đơn hàng.");
     }
   };
+  
 
   return (
     <>
-       <div className="glass mb-10 lg:px-20 py-2 px-[10px] text-sm breadcrumbs">
+      <div className="glass mb-10 lg:px-20 py-2 px-[10px] text-sm breadcrumbs">
         <ul className="font-light">
           <li>
             <Link to="/">
@@ -129,15 +133,11 @@ const OrderPage: React.FC = () => {
         </ul>
       </div>
       <ToastContainer />
-      {/* <!-- ------------------------------------------------------------------------------------------------------- --> */}
       <div className="glass mb-10 lg:px-20 py-2 px-[10px] text-sm breadcrumbs">
         <h1 className="text-4xl font-bold mb-5">Tạo Đơn Hàng</h1>
-        {/* Thông tin người dùng */}
         {userInfo && (
           <div className="border border-gray-300 p-5 rounded-lg mb-5">
-            <h2 className="text-2xl font-semibold mb-4">
-              Thông Tin Người Dùng
-            </h2>
+            <h2 className="text-2xl font-semibold mb-4">Thông Tin Người Dùng</h2>
             <p>
               <strong>Tên người dùng:</strong> {userInfo.username}
             </p>
@@ -145,8 +145,7 @@ const OrderPage: React.FC = () => {
               <strong>Địa chỉ:</strong> {userInfo.address || "Chưa có địa chỉ"}
             </p>
             <p>
-              <strong>Số điện thoại:</strong>{" "}
-              {userInfo.phone || "Chưa có số điện thoại"}
+              <strong>Số điện thoại:</strong> {userInfo.phone || "Chưa có số điện thoại"}
             </p>
             <p>
               <strong>Email:</strong> {userInfo.email || "Chưa có email"}
@@ -154,7 +153,7 @@ const OrderPage: React.FC = () => {
           </div>
         )}
 
-        {/* Chi tiết đơn hàng */}
+        {/* Order details */}
         <div className="border border-gray-300 p-5 rounded-lg mb-5">
           <h2 className="text-2xl font-semibold mb-4">Chi Tiết Đơn Hàng</h2>
           {cartItems.length === 0 ? (
@@ -167,6 +166,7 @@ const OrderPage: React.FC = () => {
                   <th className="border p-2">Giá</th>
                   <th className="border p-2">Số lượng</th>
                   <th className="border p-2">Tổng</th>
+                  <th className="border p-2">Trạng Thái</th>
                 </tr>
               </thead>
               <tbody>
@@ -176,25 +176,19 @@ const OrderPage: React.FC = () => {
                     <td className="border p-2">{item.price}.000đ</td>
                     <td className="border p-2">{item.qty}</td>
                     <td className="border p-2">{item.price * item.qty}.000đ</td>
+                    <td className="border p-2">{statusLabels[statusCodes.PENDING]}</td> 
                   </tr>
                 ))}
                 <tr>
-                  <td
-                    colSpan={3}
-                    className="border p-2 text-right font-semibold"
-                  >
-                    Tổng:
-                  </td>
-                  <td className="border p-2 font-semibold">
-                    {totalPrice}.000đ
-                  </td>
+                  <td colSpan={4} className="border p-2 text-right font-semibold">Tổng:</td>
+                  <td className="border p-2 font-semibold">{totalPrice}.000đ</td>
                 </tr>
               </tbody>
             </table>
           )}
         </div>
 
-        {/* Nút thanh toán */}
+        {/* Payment button */}
         <div className="border border-gray-300 p-5 rounded-lg">
           <Button onClick={handleCreateOrder} className="bg-primary text-white">
             <FaPaypal /> Thanh Toán
